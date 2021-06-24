@@ -25,18 +25,18 @@ def generate():
     rslt = int(bit_string,2)
     digit = str(len(str(rslt)))
     if(str(var.get()) == "1"):
-        print("OK")
+        txt_view.insert(INSERT, str(rslt))
     elif(str(var.get()) == "2"):
-        print("OK ?")
+        txt_view.insert(INSERT, bit_string)
     elif(str(var.get()) == "3"):
-        print("OK ?!")
+        txt_view.insert(INSERT, str(digit))
     elif(str(var.get()) == "4"):
-        print("OK !!")
+        txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string))
 
 window = tk.Tk()
 var = IntVar()
 window.geometry("450x355+450+355")
-photo = PhotoImage(file = 'quantum.ico')
+photo = PhotoImage(file = 'quantum.png')
 window.iconphoto(False, photo)
 window.title('Quantum Random Number Generator Simulation UI')
 lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e",font=14)
