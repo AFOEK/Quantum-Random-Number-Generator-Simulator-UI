@@ -9,6 +9,7 @@ def generate():
     shot = int(spin_shots.get())
     circ = QuantumCircuit(2,2)
     circ.h(0)
+    circ.h(1)
     circ.cx(0,1)
     circ.measure(0,0)
     circ.measure(1,1)
@@ -25,13 +26,25 @@ def generate():
     rslt = int(bit_string,2)
     digit = str(len(str(rslt)))
     if(str(var.get()) == "1"):
+        txt_view.config(state=NORMAL)
+        txt_view.delete(1.0,END)
         txt_view.insert(INSERT, str(rslt))
+        txt_view.config(state=DISABLED)
     elif(str(var.get()) == "2"):
+        txt_view.config(state=NORMAL)
+        txt_view.delete(1.0,END)
         txt_view.insert(INSERT, bit_string)
+        txt_view.config(state=DISABLED)
     elif(str(var.get()) == "3"):
+        txt_view.config(state=NORMAL)
+        txt_view.delete(1.0,END)
         txt_view.insert(INSERT, str(digit))
+        txt_view.config(state=DISABLED)
     elif(str(var.get()) == "4"):
+        txt_view.config(state=NORMAL)
+        txt_view.delete(1.0,END)
         txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string))
+        txt_view.config(state=DISABLED)
 
 window = tk.Tk()
 var = IntVar()
