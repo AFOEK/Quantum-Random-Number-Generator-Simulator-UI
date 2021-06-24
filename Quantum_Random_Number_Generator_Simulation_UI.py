@@ -1,35 +1,33 @@
 import tkinter as tk
-from tkinter import *
-from math import *
-from qiskit import *
-import qiskit as q
+from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT
+from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
 
 def generate():
-    n = int(spin_n.get())
+    n = int(spin_n.get())   #get value from spin box
     shot = int(spin_shots.get())
-    circ = QuantumCircuit(2,2)
-    circ.h(0)
-    circ.h(1)
-    circ.cx(0,1)
-    circ.measure(0,0)
-    circ.measure(1,1)
-    number =[]
-    for i in range(0,int(n)):
-        sim = Aer.get_backend('qasm_simulator')
-        job = q.execute(circ, sim, shots = int(shot))
-        result = job.result()
-        count = result.get_counts(circ)
-        max_prob = max(count, key=count.get)
-        number.append(max_prob)
-    strings = [str(number) for number in number]
-    bit_string = "".join(strings)
-    rslt = int(bit_string,2)
-    digit = str(len(str(rslt)))
-    if(str(var.get()) == "1"):
-        txt_view.config(state=NORMAL)
-        txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, str(rslt))
-        txt_view.config(state=DISABLED)
+    circ = QuantumCircuit(2,2)  #init quantum circuit
+    circ.h(0)   #add hadamard gate to first wire
+    circ.h(1)   #add hadamard gate to second wire
+    #circ.cx(0,1)    #add controled x to first wire and control to second wire
+    circ.measure(0,0)   #add measurement first wire to first classical output
+    circ.measure(1,1)   #add measurement second wire to second classical output
+    number = [] #init a list  
+    for i in range(0,int(n)):   #how many iteration which effect how many digit created
+        sim = Aer.get_backend('qasm_simulator') #get qiskit simulator
+        job = execute(circ, sim, shots = int(shot))   #execute job using existing circuit, simulator, and number of shot
+        result = job.result()   #get the job result
+        count = result.get_counts(circ) #get the probability count datatype->dict
+        max_prob = max(count, key=count.get)    #get the highest probability from the count
+        number.append(max_prob) #append all generated number to list
+    strings = [str(number) for number in number]    #convert all number in list become a list string
+    bit_string = "".join(strings)   #convert list string become bitstring
+    rslt = int(bit_string,2)    #convert all bitstring become integer
+    digit = str(len(str(rslt))) #count lenght of result
+    if(str(var.get()) == "1"):  #get value of radio button
+        txt_view.config(state=NORMAL)   #enable textbox
+        txt_view.delete(1.0,END)    #clear all entry
+        txt_view.insert(INSERT, str(rslt))  #insert the result
+        txt_view.config(state=DISABLED) #disable or readonly mode
     elif(str(var.get()) == "2"):
         txt_view.config(state=NORMAL)
         txt_view.delete(1.0,END)
@@ -46,7 +44,7 @@ def generate():
         txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string))
         txt_view.config(state=DISABLED)
 
-window = tk.Tk()
+window = Tk()
 var = IntVar()
 window.geometry("450x355+450+355")
 photo = PhotoImage(file = 'quantum.png')
