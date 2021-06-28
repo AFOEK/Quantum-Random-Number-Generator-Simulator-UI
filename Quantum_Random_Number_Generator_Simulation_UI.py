@@ -16,9 +16,9 @@ def help(event = None):
     window.option_clear()   #clear font message
 
 def clear():
-    txt_view.config(state=NORMAL)
-    txt_view.delete(1.0,END)
-    txt_view.config(state=DISABLED)
+    txt_view.config(state=NORMAL)   #set textbox become NORMAL state
+    txt_view.delete(1.0,END)    #delete all text in textbox
+    txt_view.config(state=DISABLED) #set textbox become DISABLE state(disable textbox !CANNOT EDIT THE TEXTBOX PROGRAMMATICALLY NOR MANUAL! readonly mode)
 
 def generate():
     n = int(spin_n.get())   #get value from spin box
