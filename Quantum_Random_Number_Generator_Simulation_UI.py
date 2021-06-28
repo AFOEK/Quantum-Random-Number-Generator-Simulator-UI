@@ -18,7 +18,7 @@ def help(event = None):
 def clear():
     txt_view.config(state=NORMAL)   #set textbox become NORMAL state
     txt_view.delete(1.0,END)    #delete all text in textbox
-    txt_view.config(state=DISABLED) #set textbox become DISABLE state(disable textbox !CANNOT EDIT THE TEXTBOX PROGRAMMATICALLY NOR MANUAL! readonly mode)
+    txt_view.config(state=DISABLED) #set textbox become DISABLE state(disable textbox !CANNOT EDIT THE TEXTBOX PROGRAMMATICALLY NOR MANUAL! readonly)
 
 def generate():
     n = int(spin_n.get())   #get value from spin box
@@ -26,40 +26,25 @@ def generate():
     q = int(spin_qubit.get())
     circ = QuantumCircuit(q,q)  #init quantum circuit
     if(q==1):
-        circ.h(0)   #add hadamard gate to first wire
-        circ.measure(0,0)   #add measurement first wire to first classical output
+        for i in range(0,q):
+            circ.h(i)
+            circ.measure(i,i)
     elif(q==2):
-        circ.h(0)   #add hadamard gate to first wire
-        circ.h(1)   #add hadamard gate to second wire
-        circ.measure(0,0)   #add measurement first wire to first classical output
-        circ.measure(1,1)   #add measurement second wire to second classical output
+        for i in range(0,q):
+            circ.h(i)
+            circ.measure(i,i)
     elif(q==3):
-        circ.h(0)   #add hadamard gate to first wire
-        circ.h(1)   #add hadamard gate to second wire
-        circ.h(2)   #add hadamard gate to third wire
-        circ.measure(0,0)   #add measurement first wire to first classical output
-        circ.measure(1,1)   #add measurement second wire to second classical output
-        circ.measure(2,2)   #add measurement third wire to third classical output
+        for i in range(0,q):
+            circ.h(i)
+            circ.measure(i,i)
     elif(q==4):
-        circ.h(0)   #add hadamard gate to first wire
-        circ.h(1)   #add hadamard gate to second wire
-        circ.h(2)   #add hadamard gate to third wire
-        circ.h(3)   #add hadamard gate to fourth wire
-        circ.measure(0,0)   #add measurement first wire to first classical output
-        circ.measure(1,1)   #add measurement second wire to second classical output
-        circ.measure(2,2)   #add measurement third wire to third classical output
-        circ.measure(3,3)   #add measurement forth wire to forth classical output
+        for i in range(0,q):
+            circ.h(i)
+            circ.measure(i,i)
     elif(q==5):
-        circ.h(0)   #add hadamard gate to first wire
-        circ.h(1)   #add hadamard gate to second wire
-        circ.h(2)   #add hadamard gate to third wire
-        circ.h(3)   #add hadamard gate to fourth wire
-        circ.h(4)   #add hadamard gate to fifth wire
-        circ.measure(0,0)   #add measurement first wire to first classical output
-        circ.measure(1,1)   #add measurement second wire to second classical output
-        circ.measure(2,2)   #add measurement third wire to third classical output
-        circ.measure(3,3)   #add measurement forth wire to forth classical output
-        circ.measure(4,4)   #add measurement fifth wire to fifth classical output
+        for i in range(0,q):
+            circ.h(i)
+            circ.measure(i,i)
     number = [] #init a list  
     for i in range(0,int(n)):   #how many iteration which effect how many digit created
         sim = Aer.get_backend('qasm_simulator') #get qiskit simulator
