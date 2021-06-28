@@ -1,6 +1,21 @@
 import tkinter as tk
+import os
+import datetime
+from os import path
 from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox
 from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
+
+def exports():
+    date = datetime.datetime.now()
+    msg_errc='''Error cannot create the file !!'''
+    msg_info='''File succesfully opened !!'''
+    if(not path.exists(get_path+'\Quantum_Random_Number_Output.txt')):
+        f=open(get_path+'\Quantum_Random_Number_Output.txt', "xt")
+        messagebox.showerror("Error", message=msg_errc)
+    elif(path.exists(get_path+'\Quantum_Random_Number_Output.txt')):
+        f=open(get_path+'\Quantum_Random_Number_Output.txt', "rt")
+        messagebox.showinfo("Info", message=msg_info)
+        
 
 def help(event = None):
     msg = '''Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
@@ -9,7 +24,7 @@ def help(event = None):
     \n\nGenerate result → It'll generate an integer number
     \n\nGenerate binary → It'll generate a binary form
     \n\nGenerate digit → It'll count how many digit from an integer
-    \n\nGenerate all information → it'll generate all information such as integer, digit, and binary form
+    \n\nGenerate all information → It'll generate all information such as integer, digit, and binary form
     '''
     window.option_add('*Dialog.msg.font', 'Calibri 18') #set font for message
     messagebox.showinfo("Help", message=msg)
@@ -77,12 +92,15 @@ def generate():
         txt_view.delete(1.0,END)
         txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string))
         txt_view.config(state=DISABLED)
+
+#get the path for file
+get_path = os.getcwd()
 #init all Tkinter UI
 window = Tk()
 var = IntVar()
 var.set(1)
 window.geometry("495x365+495+365")
-photo = PhotoImage(file = 'quantum.png')
+photo = PhotoImage(file = get_path+'\quantum.png')
 window.iconphoto(False, photo)
 window.title('Quantum Random Number Generator Simulation UI')
 lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e",font=14)
@@ -98,6 +116,7 @@ radio_all = Radiobutton(window, font=14, text="Generate all information", value=
 lbl_qubit = Label(window, font=14, anchor="e", justify="left", text="Qubit count: ")
 spin_qubit = Spinbox(window, font=14, width=6, repeatdelay=100, repeatinterval=90, wrap=True, from_=1, to=5)
 clr_btn = Button(window, font=14, text="Clear !", padx=10, cursor="hand2", command=clear)
+export_btn = Button(window, font=14, text="Export !", padx=10, cursor="hand2", command=exports)
 #place widget using relative layout
 lbl_n.place(x=0, y=5)
 spin_n.place(x=70, y=6)
@@ -105,6 +124,7 @@ lbl_shots.place(x=0, y=36)
 spin_shots.place(x=70, y=38)
 btn_generate.place(x=155, y=33)
 clr_btn.place(x=265, y=33)
+export_btn.place(x=350, y=33)
 lbl_qubit.place(x=150, y=5)
 spin_qubit.place(x=245, y=6)
 radio_result.place(x=0, y=70)
