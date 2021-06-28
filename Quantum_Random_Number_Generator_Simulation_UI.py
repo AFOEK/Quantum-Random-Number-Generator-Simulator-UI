@@ -3,9 +3,22 @@ from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, 
 from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
 
 def help(event = None):
-    window.option_add('*Dialog.msg.font', 'Calibri 18')
-    messagebox.showinfo("Help", message="Iteration -> It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated) \n\nShots -> It's make your generated random number more accurate and more diverse \n\nQubit Count -> It's for how many bit string generated which will be safe into array list \n\nGenerate result -> It'll generate an integer number \n\nGenerate binary -> It'll generate a binary form \n\nGenerate digit -> It'll count how many digit from an integer \n\nGenerate all information -> it'll generate all information such as integer, digit, and binary form")
-    window.option_clear()
+    msg = '''Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
+    \n\nShots → It's make your generated random number more accurate and more diverse
+    \n\nQubit Count → It's for how many bit string generated which will be safe into array list
+    \n\nGenerate result → It'll generate an integer number
+    \n\nGenerate binary → It'll generate a binary form
+    \n\nGenerate digit → It'll count how many digit from an integer
+    \n\nGenerate all information → it'll generate all information such as integer, digit, and binary form
+    '''
+    window.option_add('*Dialog.msg.font', 'Calibri 18') #set font for message
+    messagebox.showinfo("Help", message=msg)
+    window.option_clear()   #clear font message
+
+def clear():
+    txt_view.config(state=NORMAL)
+    txt_view.delete(1.0,END)
+    txt_view.config(state=DISABLED)
 
 def generate():
     n = int(spin_n.get())   #get value from spin box
@@ -52,7 +65,7 @@ def generate():
         sim = Aer.get_backend('qasm_simulator') #get qiskit simulator
         job = execute(circ, sim, shots = int(shot))   #execute job using existing circuit, simulator, and number of shot
         result = job.result()   #get the job result
-        count = result.get_counts(circ) #get the probability count datatype->dict
+        count = result.get_counts(circ) #get the probability count datatype→dict
         max_prob = max(count, key=count.get)    #get the highest probability from the count
         number.append(max_prob) #append all generated number to list
     strings = [str(number) for number in number]    #convert all number in list become a list string
@@ -83,7 +96,7 @@ def generate():
 window = Tk()
 var = IntVar()
 var.set(1)
-window.geometry("450x355+450+355")
+window.geometry("495x365+495+365")
 photo = PhotoImage(file = 'quantum.png')
 window.iconphoto(False, photo)
 window.title('Quantum Random Number Generator Simulation UI')
@@ -92,19 +105,21 @@ lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e",font=14)
 spin_n = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True)
 spin_shots = Spinbox(window, font=14, width=6, repeatdelay=200, repeatinterval=90, wrap=True ,values=(32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536))
 btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2")
-txt_view = Text(window, font=14, width=50, wrap=CHAR, xscrollcommand=set())
+txt_view = Text(window, font=14, width=55, wrap=CHAR, xscrollcommand=set())
 radio_result = Radiobutton(window, font=14, text="Generate result", value=1, variable = var, underline=9)
 radio_binary = Radiobutton(window, font=14, text="Generate binary form", value=2, variable = var, underline=9)
 radio_digit = Radiobutton(window, font=14, text="Generate digit", value=3, variable = var, underline=9)
 radio_all = Radiobutton(window, font=14, text="Generate all information", value=4, variable = var, underline=9)
 lbl_qubit = Label(window, font=14, anchor="e", justify="left", text="Qubit count: ")
 spin_qubit = Spinbox(window, font=14, width=6, repeatdelay=100, repeatinterval=90, wrap=True, from_=1, to=5)
+clr_btn = Button(window, font=14, text="Clear !", padx=10, cursor="hand2", command=clear)
 #place widget using relative layout
 lbl_n.place(x=0, y=5)
 spin_n.place(x=70, y=6)
 lbl_shots.place(x=0, y=36)
 spin_shots.place(x=70, y=38)
 btn_generate.place(x=155, y=33)
+clr_btn.place(x=265, y=33)
 lbl_qubit.place(x=150, y=5)
 spin_qubit.place(x=245, y=6)
 radio_result.place(x=0, y=70)
