@@ -6,7 +6,7 @@ from os import path
 from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox
 from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
 
-def exports():
+def exports(event=None):
     date = str(datetime.datetime.now())
     txt_data = txt_view.get("1.0", 'end-1c')
     msg_info='''File succesfully opened !!'''
@@ -41,12 +41,12 @@ def help(event = None):
     messagebox.showinfo("Help", message=msg)
     window.option_clear()   #clear font message
 
-def clear():
+def clear(event=None):
     txt_view.config(state=NORMAL)   #set textbox become NORMAL state
     txt_view.delete(1.0,END)    #delete all text in textbox
     txt_view.config(state=DISABLED) #set textbox become DISABLE state(disable textbox !CANNOT EDIT THE TEXTBOX PROGRAMMATICALLY NOR MANUAL! readonly)
 
-def generate():
+def generate(event=None):
     n = int(spin_n.get())   #get value from spin box
     shot = int(spin_shots.get())
     q = int(spin_qubit.get())
@@ -118,7 +118,7 @@ lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e",font=14)
 lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e",font=14)
 spin_n = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True)
 spin_shots = Spinbox(window, font=14, width=6, repeatdelay=200, repeatinterval=90, wrap=True ,values=(32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536))
-btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2")
+btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2", underline=0)
 txt_view = Text(window, font=14, width=55, wrap=CHAR, xscrollcommand=set())
 radio_result = Radiobutton(window, font=14, text="Generate result", value=1, variable = var, underline=9)
 radio_binary = Radiobutton(window, font=14, text="Generate binary form", value=2, variable = var, underline=9)
@@ -126,8 +126,8 @@ radio_digit = Radiobutton(window, font=14, text="Generate digit", value=3, varia
 radio_all = Radiobutton(window, font=14, text="Generate all information", value=4, variable = var, underline=9)
 lbl_qubit = Label(window, font=14, anchor="e", justify="left", text="Qubit count: ")
 spin_qubit = Spinbox(window, font=14, width=6, repeatdelay=100, repeatinterval=90, wrap=True, from_=1, to=5)
-clr_btn = Button(window, font=14, text="Clear !", padx=10, cursor="hand2", command=clear)
-export_btn = Button(window, font=14, text="Export !", padx=10, cursor="hand2", command=exports)
+clr_btn = Button(window, font=14, text="Clear !", padx=10, cursor="hand2", command=clear, underline=0)
+export_btn = Button(window, font=14, text="Export !", padx=10, cursor="hand2", command=exports, underline=0)
 #place widget using relative layout
 lbl_n.place(x=0, y=5)
 spin_n.place(x=70, y=6)
@@ -145,4 +145,7 @@ radio_all.place(x=185, y=93)
 txt_view.place(x=0, y=125)
 #Keyboard bind
 window.bind('<F1>', help)
+window.bind('<Control_L><G>', generate)
+window.bind('<Control_L><C>', clear)
+window.bind('<Control_L><E>', exports)
 window.mainloop()
