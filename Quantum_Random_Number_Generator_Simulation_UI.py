@@ -1,20 +1,31 @@
 import tkinter as tk
 import os
 import datetime
+import webbrowser
 from os import path
 from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox
 from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
 
 def exports():
-    date = datetime.datetime.now()
-    msg_errc='''Error cannot create the file !!'''
+    date = str(datetime.datetime.now())
+    txt_data = txt_view.get("1.0", 'end-1c')
     msg_info='''File succesfully opened !!'''
+    msg_created='''File succesfully created !!'''
     if(not path.exists(get_path+'\Quantum_Random_Number_Output.txt')):
         f=open(get_path+'\Quantum_Random_Number_Output.txt', "xt")
-        messagebox.showerror("Error", message=msg_errc)
+        if not f.closed:
+            messagebox.showinfo("Info", message=msg_created)
+            f.write(date+"\n"+txt_data)
+        f.close()
+        webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
     elif(path.exists(get_path+'\Quantum_Random_Number_Output.txt')):
-        f=open(get_path+'\Quantum_Random_Number_Output.txt', "rt")
-        messagebox.showinfo("Info", message=msg_info)
+        f=open(get_path+'\Quantum_Random_Number_Output.txt', "at")
+        if not f.closed:
+            messagebox.showinfo("Info", message=msg_info)
+            f.write(date+"\n"+txt_data)
+        f.close()
+        webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
+
         
 
 def help(event = None):
