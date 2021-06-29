@@ -7,17 +7,17 @@ from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, 
 from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
 
 def exports(event=None):
-    date = str(datetime.datetime.now())
-    txt_data = txt_view.get("1.0", 'end-1c')
-    msg_info='''File succesfully opened !!'''
+    date = str(datetime.datetime.now()) #get datetime and convert to string
+    txt_data = txt_view.get("1.0", 'end-1c')    #get the data on text_view
+    msg_info='''File succesfully opened !!'''   #msg string
     msg_created='''File succesfully created !!'''
-    if(not path.exists(get_path+'\Quantum_Random_Number_Output.txt')):
-        f=open(get_path+'\Quantum_Random_Number_Output.txt', "xt")
-        if not f.closed:
-            messagebox.showinfo("Info", message=msg_created)
-            f.write(date+"\n"+txt_data)
-        f.close()
-        webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
+    if(not path.exists(get_path+'\Quantum_Random_Number_Output.txt')):  #check if the file is exist
+        f=open(get_path+'\Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
+        if not f.closed:    #check if the file is still open
+            messagebox.showinfo("Info", message=msg_created)    #show messagebox
+            f.write(date+"\n"+txt_data) #write the date and text_view
+        f.close()   #close file
+        webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')   #auto open the file text using default/prefered text editor
     elif(path.exists(get_path+'\Quantum_Random_Number_Output.txt')):
         f=open(get_path+'\Quantum_Random_Number_Output.txt', "at")
         if not f.closed:
@@ -26,7 +26,6 @@ def exports(event=None):
         f.close()
         webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
 
-        
 
 def help(event = None):
     msg = '''Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
@@ -38,7 +37,7 @@ def help(event = None):
     \n\nGenerate all information → It'll generate all information such as integer, digit, and binary form
     '''
     window.option_add('*Dialog.msg.font', 'Calibri 18') #set font for message
-    messagebox.showinfo("Help", message=msg)
+    messagebox.showinfo("Help", message=msg)    #show the messagebox
     window.option_clear()   #clear font message
 
 def clear(event=None):
@@ -144,8 +143,8 @@ radio_digit.place(x=185, y=70)
 radio_all.place(x=185, y=93)
 txt_view.place(x=0, y=125)
 #Keyboard bind
-window.bind('<F1>', help)
-window.bind('<Control_L><g>', generate)
-window.bind('<Control_L><c>', clear)
-window.bind('<Control_L><e>', exports)
+window.bind('<F1>', help)   #add keyboard trigger F1
+window.bind('<Control_L><g>', generate) #add keyboard trigger Ctrl+g
+window.bind('<Control_L><c>', clear)    #add keyboard trigger Ctrl+c
+window.bind('<Control_L><e>', exports)  #add keyboard trigger Ctrl+e
 window.mainloop()
