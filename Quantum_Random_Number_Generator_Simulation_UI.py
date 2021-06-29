@@ -3,7 +3,7 @@ import os
 import datetime
 import webbrowser
 from os import path
-from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox
+from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox, StringVar
 from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
 
 def exports(event=None):
@@ -27,6 +27,9 @@ def exports(event=None):
         webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
 
 def auto_gen(event=None):
+    f=open(get_path+'\Quantum_Random_Number_Output.txt', "r+")
+    f.truncate(0)
+    f.seek(0)
     n=int(spin_n.get())
     shot=int(spin_shots.get())
     q=int(spin_qubit.get())
@@ -106,7 +109,10 @@ def help(event=None):
     \n\nGenerate result → It'll generate an integer number
     \n\nGenerate binary → It'll generate a binary form
     \n\nGenerate digit → It'll count how many digit from an integer
+    \n\nClear -> It'll clear all data from textbox
     \n\nGenerate all information → It'll generate all information such as integer, digit, and binary form
+    \n\nExport -> It'll export output from text box to an file
+    \n\nAuto generate -> It'll generate output and export it into a file
     '''
     window.option_add('*Dialog.msg.font', 'Calibri 18') #set font for message
     messagebox.showinfo("Help", message=msg)    #show the messagebox
@@ -179,7 +185,7 @@ def generate(event=None):
 get_path = os.getcwd()
 #init all Tkinter UI
 window = Tk()
-var = IntVar()
+var = IntVar(window)
 var.set(1)
 window.geometry("595x365+595+365")
 photo = PhotoImage(file = get_path+'\quantum.png')
