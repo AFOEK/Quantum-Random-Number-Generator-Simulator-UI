@@ -8,7 +8,7 @@ from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
 
 def exports(event=None):
     date = str(datetime.datetime.now()) #get datetime and convert to string
-    txt_data = txt_view.get("1.0", 'end-1c')    #get the data on text_view
+    txt_data = txt_view.get("1.0", END)    #get the data on text_view
     msg_info='''File succesfully opened !!'''   #msg string
     msg_created='''File succesfully created !!'''
     if(not path.exists(get_path+'\Quantum_Random_Number_Output.txt')):  #check if the file is exist
@@ -26,8 +26,80 @@ def exports(event=None):
         f.close()
         webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
 
+def auto_gen(event=None):
+    n=int(spin_n.get())
+    shot=int(spin_shots.get())
+    q=int(spin_qubit.get())
+    iteration=int(spin_autogen.get())
+    for j in range (0, iteration):
+        circ = QuantumCircuit(q,q)  #init quantum circuit
+        if(q==1):
+            for i in range(0,q):
+                circ.h(i)   #add H-gate
+                circ.measure(i,i)
+        elif(q==2):
+            for i in range(0,q):
+                circ.h(i)
+                circ.measure(i,i)
+        elif(q==3):
+            for i in range(0,q):
+                circ.h(i)
+                circ.measure(i,i)
+        elif(q==4):
+            for i in range(0,q):
+                circ.h(i)
+                circ.measure(i,i)
+        elif(q==5):
+            for i in range(0,q):
+                circ.h(i)
+                circ.measure(i,i)
+        number = [] #init a list  
+        for i in range(0,int(n)):   #how many iteration which effect how many digit created
+            sim = Aer.get_backend('qasm_simulator') #get qiskit simulator
+            job = execute(circ, sim, shots = int(shot))   #execute job using existing circuit, simulator, and number of shot
+            result = job.result()   #get the job result
+            count = result.get_counts(circ) #get the probability count datatype→dict
+            max_prob = max(count, key=count.get)    #get the highest probability from the count
+            number.append(max_prob) #append all generated number to list
+        strings = [str(number) for number in number]    #convert all number in list become a list string
+        bit_string = "".join(strings)   #convert list string become bitstring
+        rslt = int(bit_string,2)    #convert all bitstring become integer
+        digit = str(len(str(rslt))) #count lenght of result
+        if(str(var.get()) == "1"):  #get value of radio button
+            txt_view.config(state=NORMAL)   #enable textbox
+            txt_view.delete(1.0,END)    #clear all entry
+            txt_view.insert(INSERT, str(rslt))  #insert the result
+            txt_view.config(state=DISABLED) #disable or readonly mode
+        elif(str(var.get()) == "2"):
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, bit_string)
+            txt_view.config(state=DISABLED)
+        elif(str(var.get()) == "3"):
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, str(digit))
+            txt_view.config(state=DISABLED)
+        elif(str(var.get()) == "4"):
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string))
+            txt_view.config(state=DISABLED)
+        date = str(datetime.datetime.now()) #get datetime and convert to string
+        txt_data = txt_view.get("1.0", END)    #get the data on text_view
+        if(not path.exists(get_path+'\Quantum_Random_Number_Output.txt')):  #check if the file is exist
+                f=open(get_path+'\Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
+                if not f.closed:    #check if the file is still open
+                    f.write(date+"\n"+txt_data) #write the date and text_view
+                f.close()   #close file
+        elif(path.exists(get_path+'\Quantum_Random_Number_Output.txt')):
+            f=open(get_path+'\Quantum_Random_Number_Output.txt', "at")
+        if not f.closed:
+            f.write(date+"\n"+txt_data)
+        f.close()
+    webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
 
-def help(event = None):
+def help(event=None):
     msg = '''Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
     \n\nShots → It's make your generated random number more accurate and more diverse
     \n\nQubit Count → It's for how many bit string generated which will be safe into array list
@@ -52,7 +124,7 @@ def generate(event=None):
     circ = QuantumCircuit(q,q)  #init quantum circuit
     if(q==1):
         for i in range(0,q):
-            circ.h(i)
+            circ.h(i)   #add H-gate
             circ.measure(i,i)
     elif(q==2):
         for i in range(0,q):
@@ -109,16 +181,16 @@ get_path = os.getcwd()
 window = Tk()
 var = IntVar()
 var.set(1)
-window.geometry("495x365+495+365")
+window.geometry("595x365+595+365")
 photo = PhotoImage(file = get_path+'\quantum.png')
 window.iconphoto(False, photo)
 window.title('Quantum Random Number Generator Simulation UI')
-lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e",font=14)
-lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e",font=14)
+lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e", font=14)
+lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e", font=14)
 spin_n = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True)
 spin_shots = Spinbox(window, font=14, width=6, repeatdelay=200, repeatinterval=90, wrap=True ,values=(32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536))
 btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2", underline=0, repeatdelay=200, repeatinterval=90)
-txt_view = Text(window, font=14, width=55, wrap=CHAR, xscrollcommand=set())
+txt_view = Text(window, font=14, width=65, wrap=CHAR, xscrollcommand=set())
 radio_result = Radiobutton(window, font=14, text="Generate result", value=1, variable = var, underline=9)
 radio_binary = Radiobutton(window, font=14, text="Generate binary form", value=2, variable = var, underline=9)
 radio_digit = Radiobutton(window, font=14, text="Generate digit", value=3, variable = var, underline=9)
@@ -127,6 +199,9 @@ lbl_qubit = Label(window, font=14, anchor="e", justify="left", text="Qubit count
 spin_qubit = Spinbox(window, font=14, width=6, repeatdelay=100, repeatinterval=90, wrap=True, from_=1, to=5)
 clr_btn = Button(window, font=14, text="Clear !", padx=10, cursor="hand2", command=clear, underline=0)
 export_btn = Button(window, font=14, text="Export !", padx=10, cursor="hand2", command=exports, underline=0)
+btn_auto = Button(window, font=5, text="Auto Generate !", padx=5, cursor="hand2", command=auto_gen, underline=0)
+lbl_autogen = Label(window, text="Auto Iteration: ", justify="left", anchor="e", font=14)
+spin_autogen = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True)
 #place widget using relative layout
 lbl_n.place(x=0, y=5)
 spin_n.place(x=70, y=6)
@@ -141,10 +216,14 @@ radio_result.place(x=0, y=70)
 radio_binary.place(x=0, y=93)
 radio_digit.place(x=185, y=70)
 radio_all.place(x=185, y=93)
+lbl_autogen.place(x=325, y=5)
+spin_autogen.place(x=430, y=6)
 txt_view.place(x=0, y=125)
+btn_auto.place(x=440, y=33)
 #Keyboard bind
 window.bind('<F1>', help)   #add keyboard trigger F1
 window.bind('<Control_L><g>', generate) #add keyboard trigger Ctrl+g
 window.bind('<Control_L><c>', clear)    #add keyboard trigger Ctrl+c
 window.bind('<Control_L><e>', exports)  #add keyboard trigger Ctrl+e
+window.bind('<Control_L><a>', auto_gen) #add keyboard trigger Ctrl+a
 window.mainloop()
