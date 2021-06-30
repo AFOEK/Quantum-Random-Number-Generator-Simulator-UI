@@ -2,9 +2,34 @@ import tkinter as tk
 import os
 import datetime
 import webbrowser
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from os import path
-from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox, StringVar
+from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox, StringVar, Toplevel
 from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
+
+def get_autogen_stat(event=None):
+    window2 = Toplevel(window)
+    window2.title("Auto Generator Number Statistics")
+    window2.geometry("700x750+700+750")
+    window2.configure(bg="blue")
+    window2.focus_force()
+    photo2 = PhotoImage(file = get_path+'\quantum.png')
+    window2.iconphoto(False, photo2)
+    window2.bind('<F1>', help)   #add keyboard trigger F1
+    try:
+        dat_frame = auto_gen.df
+    except:
+        window2.destroy()
+        messagebox.showerror("Error","You need auto generate number before use this tools")
+    figure = plt.Figure(figsize=(6,6), dpi=110)
+    ax = figure.add_subplot(111)
+    chart = FigureCanvasTkAgg(figure, window2)
+    chart.draw()
+    chart.get_tk_widget().place(x=5,y=5)
+    dat_frame.plot(x="Number", y="Frequency",kind='bar', legend=True, ax=ax)
+    ax.set_title("Frequency distribution among generated random number")
 
 def exports(event=None):
     date = str(datetime.datetime.now()) #get datetime and convert to string
@@ -34,6 +59,8 @@ def auto_gen(event=None):
     shot=int(spin_shots.get())
     q=int(spin_qubit.get())
     iteration=int(spin_autogen.get())
+    rslt_list = []
+    freq = {}
     for j in range (0, iteration):
         circ = QuantumCircuit(q,q)  #init quantum circuit
         if(q==1):
@@ -68,6 +95,7 @@ def auto_gen(event=None):
         bit_string = "".join(strings)   #convert list string become bitstring
         rslt = int(bit_string,2)    #convert all bitstring become integer
         digit = str(len(str(rslt))) #count lenght of result
+        rslt_list.append(rslt)
         if(str(var.get()) == "1"):  #get value of radio button
             txt_view.config(state=NORMAL)   #enable textbox
             txt_view.delete(1.0,END)    #clear all entry
@@ -101,20 +129,34 @@ def auto_gen(event=None):
             f.write(date+"\n"+txt_data)
         f.close()
     webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
+    for numbers in rslt_list:
+        if numbers in freq:
+            freq[numbers] += 1
+        else:
+            freq[numbers] =1
+    auto_gen.df = pd.DataFrame(list(freq.items()), columns=['Number', 'Frequency'])
 
 def help(event=None):
     msg = '''Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
-    \n\nShots → It's make your generated random number more accurate and more diverse
-    \n\nQubit Count → It's for how many bit string generated which will be safe into array list
-    \n\nGenerate result → It'll generate an integer number
-    \n\nGenerate binary → It'll generate a binary form
-    \n\nGenerate digit → It'll count how many digit from an integer
-    \n\nClear → It'll clear all data from textbox
-    \n\nGenerate all information → It'll generate all information such as integer, digit, and binary form
-    \n\nExport → It'll export output from text box to an file
-    \n\nAuto generate → It'll generate output and export it into a file
+    \nShots → It's make your generated random number more accurate and more diverse
+    \nQubit Count → It's for how many bit string generated which will be safe into array list
+    \nGenerate result → It'll generate an integer number
+    \nGenerate binary → It'll generate a binary form
+    \nGenerate digit → It'll count how many digit from an integer
+    \nClear → It'll clear all data from textbox
+    \nGenerate all information → It'll generate all information such as integer, digit, and binary form
+    \nExport → It'll export output from text box to an file
+    \nAuto generate → It'll generate output and export it into a file
+    \nAuto generate statistic → It'll create visualization using bar, heatmap, and line graph
+    \nKeyboard Shortcut:
+    \t1. Ctrl+g → Generate number
+    \t2. Ctrl+c → Clear output from text box
+    \t3. Ctrl+e → Export generated data to a file
+    \t4. Ctrl+a → Auto Generate random number using how many number iteration given
+    \t5. Ctrl+s → See visualization from generated random number
+    \t6. F1 → Reopen this window
     '''
-    window.option_add('*Dialog.msg.font', 'Calibri 18') #set font for message
+    window.option_add('*Dialog.msg.font', 'Calibri 28') #set font for message
     messagebox.showinfo("Help", message=msg)    #show the messagebox
     window.option_clear()   #clear font message
 
@@ -208,6 +250,7 @@ export_btn = Button(window, font=14, text="Export !", padx=10, cursor="hand2", c
 btn_auto = Button(window, font=5, text="Auto Generate !", padx=5, cursor="hand2", command=auto_gen, underline=0)
 lbl_autogen = Label(window, text="Auto Iteration: ", justify="left", anchor="e", font=14)
 spin_autogen = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True)
+btn_stat = Button(window, font=14, text="Auto Generator Statistics", padx=10, cursor="hand2", command=get_autogen_stat, underline=15)
 #place widget using relative layout
 lbl_n.place(x=0, y=5)
 spin_n.place(x=70, y=6)
@@ -226,10 +269,12 @@ lbl_autogen.place(x=325, y=5)
 spin_autogen.place(x=430, y=6)
 txt_view.place(x=0, y=125)
 btn_auto.place(x=440, y=33)
+btn_stat.place(x=380, y=70)
 #Keyboard bind
 window.bind('<F1>', help)   #add keyboard trigger F1
 window.bind('<Control_L><g>', generate) #add keyboard trigger Ctrl+g
 window.bind('<Control_L><c>', clear)    #add keyboard trigger Ctrl+c
 window.bind('<Control_L><e>', exports)  #add keyboard trigger Ctrl+e
 window.bind('<Control_L><a>', auto_gen) #add keyboard trigger Ctrl+a
+window.bind('<Control_L><s>', get_autogen_stat) #add keyboard trigger Ctrl+s
 window.mainloop()
