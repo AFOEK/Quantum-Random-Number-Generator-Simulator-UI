@@ -3,17 +3,18 @@ import os
 import datetime
 import webbrowser
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from os import path
-from tkinter import Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox, StringVar, Toplevel
+from tkinter import Frame, Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox, StringVar, Toplevel
 from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
     window2.title("Auto Generator Number Statistics")
-    window2.geometry("700x750+700+750")
-    window2.configure(bg="blue")
+    window2.geometry("700x750")
+    window2.configure(bg="white")
     window2.focus_force()
     photo2 = PhotoImage(file = get_path+'\quantum.png')
     window2.iconphoto(False, photo2)
@@ -23,13 +24,29 @@ def get_autogen_stat(event=None):
     except:
         window2.destroy()
         messagebox.showerror("Error","You need auto generate number before use this tools")
-    figure = plt.Figure(figsize=(6,6), dpi=110)
-    ax = figure.add_subplot(111)
-    chart = FigureCanvasTkAgg(figure, window2)
-    chart.draw()
-    chart.get_tk_widget().place(x=5,y=5)
-    dat_frame.plot(x="Number", y="Frequency",kind='bar', legend=True, ax=ax)
-    ax.set_title("Frequency distribution among generated random number")
+    if(str(varCheck1.get()) == "1"):
+        figure = plt.Figure(figsize=(6,6), dpi=110)
+        ax = figure.add_subplot(111)
+        chart = FigureCanvasTkAgg(figure, window2)
+        chart.draw()
+        chart.get_tk_widget().place(x=5,y=5)
+        dat_frame.plot(x="Number", y="Frequency",kind='bar', legend=True, ax=ax)
+        ax.set_title("Frequency distribution among generated random number")
+    elif(str(varCheck1.get()) == "2"):
+        figure, ax = plt.subplots(figsize=(6,6), dpi=110)
+        sns.heatmap(dat_frame, cmap='YlGnBu', annot=True)
+        chart = FigureCanvasTkAgg(figure, window2)
+        chart.draw()
+        chart.get_tk_widget().place(x=5,y=5)
+    elif(str(varCheck1.get()) == "3"):
+        figure = plt.Figure(figsize=(6,6), dpi=110)
+        ax = figure.add_subplot(111)
+        chart = FigureCanvasTkAgg(figure, window2)
+        chart.draw()
+        chart.get_tk_widget().place(x=5,y=5)
+        dat_frame.plot(x="Number", y="Frequency",kind='scatter', legend=True, ax=ax, cmap='YlGnBu')
+        ax.set_title("Frequency distribution among generated random number")
+        
 
 def exports(event=None):
     date = str(datetime.datetime.now()) #get datetime and convert to string
@@ -147,7 +164,7 @@ def help(event=None):
     \nGenerate all information → It'll generate all information such as integer, digit, and binary form
     \nExport → It'll export output from text box to an file
     \nAuto generate → It'll generate output and export it into a file
-    \nAuto generate statistic → It'll create visualization using bar, heatmap, and line graph
+    \nAuto generate statistic → It'll create visualization using bar, heatmap, or line graph
     \nKeyboard Shortcut:
     \t1. Ctrl+g → Generate number
     \t2. Ctrl+c → Clear output from text box
@@ -228,8 +245,10 @@ get_path = os.getcwd()
 #init all Tkinter UI
 window = Tk()
 var = IntVar(window)
+varCheck1 = IntVar(window)
+varCheck1.set(1)
 var.set(1)
-window.geometry("595x365+595+365")
+window.geometry("720x365")
 photo = PhotoImage(file = get_path+'\quantum.png')
 window.iconphoto(False, photo)
 window.title('Quantum Random Number Generator Simulation UI')
@@ -238,7 +257,7 @@ lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e", font=14)
 spin_n = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True)
 spin_shots = Spinbox(window, font=14, width=6, repeatdelay=200, repeatinterval=90, wrap=True ,values=(32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536))
 btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2", underline=0, repeatdelay=200, repeatinterval=90)
-txt_view = Text(window, font=14, width=65, wrap=CHAR, xscrollcommand=set())
+txt_view = Text(window, font=14, width=80, wrap=CHAR, xscrollcommand=set())
 radio_result = Radiobutton(window, font=14, text="Generate result", value=1, variable = var, underline=9)
 radio_binary = Radiobutton(window, font=14, text="Generate binary form", value=2, variable = var, underline=9)
 radio_digit = Radiobutton(window, font=14, text="Generate digit", value=3, variable = var, underline=9)
@@ -251,6 +270,9 @@ btn_auto = Button(window, font=5, text="Auto Generate !", padx=5, cursor="hand2"
 lbl_autogen = Label(window, text="Auto Iteration: ", justify="left", anchor="e", font=14)
 spin_autogen = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True)
 btn_stat = Button(window, font=14, text="Auto Generator Statistics", padx=10, cursor="hand2", command=get_autogen_stat, underline=15)
+radio_br = Radiobutton(window, font=14, text="Bar", variable=varCheck1, underline = 0, value = 1)
+radio_hm = Radiobutton(window, font=14, text="Heat Map", variable=varCheck1, underline = 0, value = 2)
+radio_sc = Radiobutton(window, font=14, text="Scatter Map", variable=varCheck1, underline = 0, value = 3)
 #place widget using relative layout
 lbl_n.place(x=0, y=5)
 spin_n.place(x=70, y=6)
@@ -270,6 +292,9 @@ spin_autogen.place(x=430, y=6)
 txt_view.place(x=0, y=125)
 btn_auto.place(x=440, y=33)
 btn_stat.place(x=380, y=70)
+radio_br.place(x=595, y=6)
+radio_hm.place(x=595, y=33)
+radio_sc.place(x=595, y=59)
 #Keyboard bind
 window.bind('<F1>', help)   #add keyboard trigger F1
 window.bind('<Control_L><g>', generate) #add keyboard trigger Ctrl+g
