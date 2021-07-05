@@ -6,8 +6,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from os import path
-from tkinter import Frame, Text, Button, PhotoImage, Radiobutton, Tk, Spinbox, IntVar, Label, CHAR, NORMAL, END, DISABLED, INSERT, messagebox, StringVar, Toplevel
-from qiskit import Aer, QuantumCircuit, QuantumRegister, execute
+from tkinter import *
+from qiskit import *
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
@@ -250,6 +250,7 @@ var.set(1)
 window.geometry("720x365")
 photo = PhotoImage(file = get_path+'\quantum.png')
 window.iconphoto(False, photo)
+window.tk.call('tk','scaling','1')
 window.title('Quantum Random Number Generator Simulation UI')
 lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e", font=14)
 lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e", font=14)
