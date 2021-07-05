@@ -15,7 +15,7 @@ def get_autogen_stat(event=None):
     window2.geometry("700x750")
     window2.configure(bg="white")
     window2.focus_force()
-    photo2 = PhotoImage(file = get_path+'\quantum.png')
+    photo2 = PhotoImage(file = get_path+'/quantum.png')
     window2.iconphoto(False, photo2)
     window2.bind('<F1>', help)   #add keyboard trigger F1
     try:
@@ -52,23 +52,23 @@ def exports(event=None):
     txt_data = txt_view.get("1.0", END)    #get the data on text_view
     msg_info='''File succesfully opened !!'''   #msg string
     msg_created='''File succesfully created !!'''
-    if(not path.exists(get_path+'\Quantum_Random_Number_Output.txt')):  #check if the file is exist
-        f=open(get_path+'\Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
+    if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
+        f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
         if not f.closed:    #check if the file is still open
             messagebox.showinfo("Info", message=msg_created)    #show messagebox
             f.write(date+"\n"+txt_data) #write the date and text_view
         f.close()   #close file
-        webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')   #auto open the file text using default/prefered text editor
-    elif(path.exists(get_path+'\Quantum_Random_Number_Output.txt')):
-        f=open(get_path+'\Quantum_Random_Number_Output.txt', "at")
+        webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')   #auto open the file text using default/prefered text editor
+    elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
+        f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
         if not f.closed:
             messagebox.showinfo("Info", message=msg_info)
             f.write(date+"\n"+txt_data)
         f.close()
-        webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
+        webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
 
 def auto_gen(event=None):
-    f=open(get_path+'\Quantum_Random_Number_Output.txt', "r+")
+    f=open(get_path+'/Quantum_Random_Number_Output.txt', "r+")
     f.truncate(0)
     f.seek(0)
     n=int(spin_n.get())
@@ -134,17 +134,17 @@ def auto_gen(event=None):
             txt_view.config(state=DISABLED)
         date = str(datetime.datetime.now()) #get datetime and convert to string
         txt_data = txt_view.get("1.0", END)    #get the data on text_view
-        if(not path.exists(get_path+'\Quantum_Random_Number_Output.txt')):  #check if the file is exist
-                f=open(get_path+'\Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
+        if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
+                f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
                 if not f.closed:    #check if the file is still open
                     f.write(date+"\n"+txt_data) #write the date and text_view
                 f.close()   #close file
-        elif(path.exists(get_path+'\Quantum_Random_Number_Output.txt')):
-            f=open(get_path+'\Quantum_Random_Number_Output.txt', "at")
+        elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
+            f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
         if not f.closed:
             f.write(date+"\n"+txt_data)
         f.close()
-    webbrowser.open(get_path+'\Quantum_Random_Number_Output.txt')
+    webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
     for numbers in rslt_list:
         if numbers in freq:
             freq[numbers] += 1
@@ -248,7 +248,7 @@ varCheck1 = IntVar(window)
 varCheck1.set(1)
 var.set(1)
 window.geometry("720x365")
-photo = PhotoImage(file = get_path+'\quantum.png')
+photo = PhotoImage(file = get_path+'/quantum.png')
 window.iconphoto(False, photo)
 window.tk.call('tk','scaling','1')
 window.title('Quantum Random Number Generator Simulation UI')
