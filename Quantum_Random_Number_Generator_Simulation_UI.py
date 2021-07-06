@@ -8,8 +8,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from os import path
 from tkinter import *
 from qiskit import *
-from Tkinter import *
-import tkMessageBox
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
@@ -175,6 +173,7 @@ def help(event=None):
     \t6. F1 → Reopen this window
     \nFor recommended settings click clear button !
     \nAuthor: Felix 'AFÖÉK' Montalfu Ⓚ 2021, All Right Reserved
+    \nGithub link: https://github.com/AFOEK/Quantum-Random-Number-Generator-Simulator-UI
     '''
     window.option_add('*Dialog.msg.font', 'Calibri 18') #set font for message
     messagebox.showinfo("Help", message=msg)    #show the messagebox
