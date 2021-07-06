@@ -8,6 +8,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from os import path
 from tkinter import *
 from qiskit import *
+from Tkinter import *
+import tkMessageBox
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
@@ -171,8 +173,10 @@ def help(event=None):
     \t4. Ctrl+a → Auto Generate random number using how many number iteration given
     \t5. Ctrl+s → See visualization from generated random number
     \t6. F1 → Reopen this window
+    \nFor recommended settings click clear button !
+    \nAuthor: Felix 'AFÖÉK' Montalfu Ⓚ 2021, All Right Reserved
     '''
-    window.option_add('*Dialog.msg.font', 'Calibri 28') #set font for message
+    window.option_add('*Dialog.msg.font', 'Calibri 18') #set font for message
     messagebox.showinfo("Help", message=msg)    #show the messagebox
     window.option_clear()   #clear font message
 
@@ -180,6 +184,10 @@ def clear(event=None):
     txt_view.config(state=NORMAL)   #set textbox become NORMAL state
     txt_view.delete(1.0,END)    #delete all text in textbox
     txt_view.config(state=DISABLED) #set textbox become DISABLE state(disable textbox !CANNOT EDIT THE TEXTBOX PROGRAMMATICALLY NOR MANUAL! readonly)
+    n_var.set("2")
+    shots_var.set("1024")
+    qubit_var.set("2")
+    auto_gen_var.set("100")
 
 def generate(event=None):
     n = int(spin_n.get())   #get value from spin box
@@ -243,10 +251,15 @@ def generate(event=None):
 get_path = os.getcwd()
 #init all Tkinter UI
 window = Tk()
+n_var = StringVar(window)
+shots_var = StringVar(window)
+qubit_var = StringVar(window)
+auto_gen_var = StringVar()
 var = IntVar(window)
 varCheck1 = IntVar(window)
 varCheck1.set(1)
 var.set(1)
+qubit_var.set("1024")
 window.geometry("720x365")
 photo = PhotoImage(file = get_path+'/quantum.png')
 window.iconphoto(False, photo)
@@ -254,8 +267,8 @@ window.tk.call('tk','scaling','1')
 window.title('Quantum Random Number Generator Simulation UI')
 lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e", font=14)
 lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e", font=14)
-spin_n = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True)
-spin_shots = Spinbox(window, font=14, width=6, repeatdelay=200, repeatinterval=90, wrap=True ,values=(32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536))
+spin_n = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True, textvariable=n_var)
+spin_shots = Spinbox(window, font=14, width=6, repeatdelay=200, repeatinterval=90, wrap=True ,values=(32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536), textvariable=shots_var)
 btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2", underline=0, repeatdelay=200, repeatinterval=90)
 txt_view = Text(window, font=14, width=80, wrap=CHAR, xscrollcommand=set())
 radio_result = Radiobutton(window, font=14, text="Generate result", value=1, variable = var, underline=9)
@@ -263,12 +276,12 @@ radio_binary = Radiobutton(window, font=14, text="Generate binary form", value=2
 radio_digit = Radiobutton(window, font=14, text="Generate digit", value=3, variable = var, underline=9)
 radio_all = Radiobutton(window, font=14, text="Generate all information", value=4, variable = var, underline=9)
 lbl_qubit = Label(window, font=14, anchor="e", justify="left", text="Qubit count: ")
-spin_qubit = Spinbox(window, font=14, width=6, repeatdelay=100, repeatinterval=90, wrap=True, from_=1, to=5)
+spin_qubit = Spinbox(window, font=14, width=6, repeatdelay=100, repeatinterval=90, wrap=True, from_=1, to=5, textvariable=qubit_var)
 clr_btn = Button(window, font=14, text="Clear !", padx=10, cursor="hand2", command=clear, underline=0)
 export_btn = Button(window, font=14, text="Export !", padx=10, cursor="hand2", command=exports, underline=0)
 btn_auto = Button(window, font=5, text="Auto Generate !", padx=5, cursor="hand2", command=auto_gen, underline=0)
 lbl_autogen = Label(window, text="Auto Iteration: ", justify="left", anchor="e", font=14)
-spin_autogen = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True)
+spin_autogen = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True, textvariable=auto_gen_var)
 btn_stat = Button(window, font=14, text="Auto Generator Statistics", padx=10, cursor="hand2", command=get_autogen_stat, underline=15)
 radio_br = Radiobutton(window, font=14, text="Bar", variable=varCheck1, underline = 0, value = 1)
 radio_hm = Radiobutton(window, font=14, text="Heat Map", variable=varCheck1, underline = 0, value = 2)
@@ -302,4 +315,5 @@ window.bind('<Control_L><c>', clear)    #add keyboard trigger Ctrl+c
 window.bind('<Control_L><e>', exports)  #add keyboard trigger Ctrl+e
 window.bind('<Control_L><a>', auto_gen) #add keyboard trigger Ctrl+a
 window.bind('<Control_L><s>', get_autogen_stat) #add keyboard trigger Ctrl+s
+help()
 window.mainloop()
