@@ -50,22 +50,26 @@ def get_autogen_stat(event=None):
 def exports(event=None):
     date = str(datetime.datetime.now()) #get datetime and convert to string
     txt_data = txt_view.get("1.0", END)    #get the data on text_view
-    msg_info='''File succesfully opened !!'''   #msg string
-    msg_created='''File succesfully created !!'''
-    if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
-        f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
-        if not f.closed:    #check if the file is still open
-            messagebox.showinfo("Info", message=msg_created)    #show messagebox
-            f.write(date+"\n"+txt_data) #write the date and text_view
-        f.close()   #close file
-        webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')   #auto open the file text using default/prefered text editor
-    elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
-        f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
-        if not f.closed:
-            messagebox.showinfo("Info", message=msg_info)
-            f.write(date+"\n"+txt_data)
-        f.close()
-        webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
+    if txt_data == "\n":
+        messagebox.showerror(title="ERROR", message="You need generate number first !")
+    else:
+        msg_info='''File succesfully opened !!'''   #msg string
+        msg_created='''File succesfully created !!'''
+        if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
+            f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
+            if not f.closed:    #check if the file is still open
+                messagebox.showinfo("Info", message=msg_created)    #show messagebox
+                f.write(date+"\n"+txt_data) #write the date and text_view
+            f.close()   #close file
+            webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')   #auto open the file text using default/prefered text editor
+        elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
+            f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
+            if not f.closed:
+                messagebox.showinfo("Info", message=msg_info)
+                f.write(date+"\n"+txt_data)
+            f.close()
+            webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
+    
 
 def auto_gen(event=None):
     f=open(get_path+'/Quantum_Random_Number_Output.txt', "r+")
