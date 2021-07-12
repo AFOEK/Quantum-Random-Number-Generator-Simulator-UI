@@ -15,3 +15,7 @@ This project inspired by [this post](https://blog.red-badger.com/2018/9/24/gener
 
 further reading :
 https://www.nature.com/articles/s41598-019-56706-2
+
+For web version you can get from here :
+* [Github](https://github.com/AFOEK/Quantum_Random_Number_Generator_Flask)
+* [Heroku](qrng-flask.herokuapp.com)
