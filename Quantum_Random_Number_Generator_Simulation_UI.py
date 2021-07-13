@@ -177,7 +177,14 @@ def help(event=None):
     \t3. Ctrl+e → Export generated data to a file
     \t4. Ctrl+a → Auto Generate random number using how many number iteration given
     \t5. Ctrl+s → See visualization from generated random number
-    \t6. F1 → Reopen this window
+    \t6. Ctrl+Shift+b → Select bar chart
+    \t7. Ctrl+Shift+h → Select heatmap
+    \t8. Ctrl+Shift+s → Select scattermap
+    \t9. Ctrl+r → Select Result
+    \t10. Ctrl+b → Select Binary
+    \t11. Ctrl+d → Select Digit
+    \t12. Crtl+Shift+A → Select All Information
+    \t13. F1 → Reopen this window
     \nFor recommended settings click clear button !
     \nAuthor: Felix 'AFÖÉK' Montalfu Ⓚ 2021, All Right Reserved
     \nGithub link: https://github.com/AFOEK/Quantum-Random-Number-Generator-Simulator-UI
@@ -254,6 +261,27 @@ def generate(event=None):
         txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string))
         txt_view.config(state=DISABLED)
 
+def select_bar(event=None):
+    varCheck1.set(1)
+
+def select_heatmap(event=None):
+    varCheck1.set(2)
+
+def select_scatter(event=None):
+    varCheck1.set(3)
+
+def select_result(event=None):
+    var.set(1)
+
+def select_bin(event=None):
+    var.set(2)
+
+def select_digit(event=None):
+    var.set(3)
+
+def select_all(event=None):
+    var.set(4)
+
 #get the path for file
 get_path = os.getcwd()
 options = [
@@ -282,7 +310,6 @@ window.geometry("850x365")
 photo = PhotoImage(file = get_path+'/quantum.png')
 window.iconphoto(False, photo)
 window.tk.call('tk','scaling','1')
-frames = [PhotoImage(file= get_path+'/qiskit.gif', format='gif -index %i' %(i)) for i in range(30)]
 window.title('Quantum Random Number Generator Simulation UI')
 font14 = Font.Font(size=14)
 font11 = Font.Font(size=12)
@@ -292,7 +319,6 @@ lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e", font=14)
 lbl_qubit = Label(window, text="Qubit count: ", font=14, anchor="e", justify="left")
 lbl_autogen = Label(window, text="Auto Iteration: ", justify="left", anchor="e", font=14)
 lbl_backend = Label(window, text="Backend: ", font=14, justify="left", anchor="e")
-lbl_gif = Label(window)
 #Spinbox init
 spin_n = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True, textvariable=n_var)
 spin_qubit = Spinbox(window, font=14, width=6, repeatdelay=100, repeatinterval=90, wrap=True, from_=1, to=5, textvariable=qubit_var)
@@ -339,8 +365,8 @@ txt_view.place(x=0, y=125)
 btn_auto.place(x=440, y=33)
 btn_stat.place(x=380, y=70)
 radio_br.place(x=590, y=35)
-radio_hm.place(x=590, y=56)
-radio_sc.place(x=590, y=78)
+radio_hm.place(x=590, y=57)
+radio_sc.place(x=590, y=79)
 lbl_backend.place(x=508, y=5)
 drop_menu.place(x=578, y=3)
 #Keyboard bind
@@ -350,5 +376,12 @@ window.bind('<Control_L><c>', clear)    #add keyboard trigger Ctrl+c
 window.bind('<Control_L><e>', exports)  #add keyboard trigger Ctrl+e
 window.bind('<Control_L><a>', auto_gen) #add keyboard trigger Ctrl+a
 window.bind('<Control_L><s>', get_autogen_stat) #add keyboard trigger Ctrl+s
+window.bind('<Control_L><B>', select_bar)   #add keyboard trigger Ctrl+Shift+b
+window.bind('<Control_L><H>', select_heatmap)   #add keyboard trigger Ctrl+Shift+h
+window.bind('<Control_L><S>', select_scatter)   #add keyboard trigger Ctrl+Shift+s
+window.bind('<Control_L><r>', select_result)    #add keyboard trigger Ctrl+r
+window.bind('<Control_L><b>', select_bin)   #add keyboard trigger Ctrl+b
+window.bind('<Control_L><d>', select_digit) #add keyboard trigger Ctrl+d
+window.bind('<Control_L><A>', select_all)   #add keyboard trigger Ctrl+Shift+A
 help()
 window.mainloop()
