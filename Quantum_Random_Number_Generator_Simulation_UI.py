@@ -9,6 +9,9 @@ from os import path
 from tkinter import *
 from qiskit import *
 from tkinter import font as Font
+from qiskit.algorithms.factorizers import Shor
+
+__version__ = "0.1.0rc1.1"
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
@@ -237,28 +240,28 @@ def generate(event=None):
         max_prob = max(count, key=count.get)    #get the highest probability from the count
         number.append(max_prob) #append all generated number to list
     strings = [str(number) for number in number]    #convert all number in list become a list string
-    bit_string = "".join(strings)   #convert list string become bitstring
-    rslt = int(bit_string,2)    #convert all bitstring become integer
-    digit = str(len(str(rslt))) #count lenght of result
+    generate.bit_string = "".join(strings)   #convert list string become bitstring
+    generate.rslt = int(generate.bit_string,2)    #convert all bitstring become integer
+    generate.digit = str(len(str(generate.rslt))) #count lenght of result
     if(str(var.get()) == "1"):  #get value of radio button
         txt_view.config(state=NORMAL)   #enable textbox
         txt_view.delete(1.0,END)    #clear all entry
-        txt_view.insert(INSERT, str(rslt))  #insert the result
+        txt_view.insert(INSERT, str(generate.rslt))  #insert the result
         txt_view.config(state=DISABLED) #disable or readonly mode
     elif(str(var.get()) == "2"):
         txt_view.config(state=NORMAL)
         txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, bit_string)
+        txt_view.insert(INSERT, generate.bit_string)
         txt_view.config(state=DISABLED)
     elif(str(var.get()) == "3"):
         txt_view.config(state=NORMAL)
         txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, str(digit))
+        txt_view.insert(INSERT, str(generate.digit))
         txt_view.config(state=DISABLED)
     elif(str(var.get()) == "4"):
         txt_view.config(state=NORMAL)
         txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string))
+        txt_view.insert(INSERT, str(generate.digit) +"\n" + str(generate.rslt) +"\n"+ str(generate.bit_string))
         txt_view.config(state=DISABLED)
 
 def select_bar(event=None):
@@ -282,8 +285,28 @@ def select_digit(event=None):
 def select_all(event=None):
     var.set(4)
 
+def factorize(event=None):
+    window3 = Toplevel(window)
+    window3.title("Factorize")
+    window3.geometry("300x400")
+    window3.configure(bg="white")
+    window3.focus_force()
+    photo3 = PhotoImage(file = get_path+'/quantum.png')
+    window3.iconphoto(False, photo3)
+    try:
+        result = generate.rslt
+        bit_string = generate.bit_string
+        digit = generate.digit
+    except:
+        window3.destroy()
+        messagebox.showerror("Error","You need generate a number before use this tools")
+    shot = int(spin_shots.get())
+    backend = option_var.get()
+    
+
 #get the path for file
 get_path = os.getcwd()
+#Set option value for drop down menu
 options = [
     "aer_simulator",
     "qasm_simulator",
@@ -330,6 +353,7 @@ btn_export = Button(window, font=14, text="Export !", padx=10, cursor="hand2", c
 btn_auto = Button(window, font=5, text="Auto Generate !", padx=5, cursor="hand2", command=auto_gen, underline=0)
 btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2", underline=0, repeatdelay=200, repeatinterval=90)
 btn_stat = Button(window, font=14, text="Auto Generator Statistics", padx=10, cursor="hand2", command=get_autogen_stat, underline=15)
+btn_shors = Button(window, font=14, text="Factorize", padx=5, command=factorize, cursor="hand2", underline=0)
 #Text init
 txt_view = Text(window, font=14, width=94, wrap=CHAR, xscrollcommand=set())
 #Drop menu init
@@ -369,6 +393,7 @@ radio_hm.place(x=590, y=57)
 radio_sc.place(x=590, y=79)
 lbl_backend.place(x=508, y=5)
 drop_menu.place(x=578, y=3)
+btn_shors.place(x=705, y=35)
 #Keyboard bind
 window.bind('<F1>', help)   #add keyboard trigger F1
 window.bind('<Control_L><g>', generate) #add keyboard trigger Ctrl+g
@@ -383,5 +408,6 @@ window.bind('<Control_L><r>', select_result)    #add keyboard trigger Ctrl+r
 window.bind('<Control_L><b>', select_bin)   #add keyboard trigger Ctrl+b
 window.bind('<Control_L><d>', select_digit) #add keyboard trigger Ctrl+d
 window.bind('<Control_L><A>', select_all)   #add keyboard trigger Ctrl+Shift+A
+window.bind('<Control_L><f>', factorize)    #add keyboard trigger Ctrl+f
 help()
 window.mainloop()
