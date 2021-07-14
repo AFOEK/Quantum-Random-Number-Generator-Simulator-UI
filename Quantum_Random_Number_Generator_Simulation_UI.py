@@ -293,6 +293,10 @@ def factorize(event=None):
     window3.focus_force()
     photo3 = PhotoImage(file = get_path+'/quantum.png')
     window3.iconphoto(False, photo3)
+    #Label init
+    lbl_rslt = Label(window3,text="Soon",font=25, justify="left", anchor="e")
+    #place widget using relative layout
+    lbl_rslt.place(x=125, y=150)
     try:
         result = generate.rslt
         bit_string = generate.bit_string
