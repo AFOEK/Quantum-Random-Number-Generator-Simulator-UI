@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from os import path
 from tkinter import *
+from tkinter import messagebox
 from qiskit import *
 from tkinter import font as Font
 from qiskit.algorithms.factorizers import Shor
@@ -192,7 +193,6 @@ def help(event=None):
     \nAuthor: Felix 'AFÖÉK' Montalfu Ⓚ 2021, All Right Reserved
     \nGithub link: https://github.com/AFOEK/Quantum-Random-Number-Generator-Simulator-UI
     '''
-    window.option_add('*Dialog.msg.font', 'Calibri 18') #set font for message
     messagebox.showinfo("Help", message=msg)    #show the messagebox
     window.option_clear()   #clear font message
 
@@ -338,8 +338,8 @@ photo = PhotoImage(file = get_path+'/quantum.png')
 window.iconphoto(False, photo)
 window.tk.call('tk','scaling','1')
 window.title('Quantum Random Number Generator Simulation UI')
-font14 = Font.Font(size=14)
-font11 = Font.Font(size=12)
+font14 = Font.Font(size=10)
+font11 = Font.Font(size=11)
 #Label init
 lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e", font=14)
 lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e", font=14)
@@ -379,25 +379,25 @@ spin_n.place(x=70, y=6)
 lbl_shots.place(x=0, y=36)
 spin_shots.place(x=70, y=38)
 btn_generate.place(x=155, y=33)
-btn_clear.place(x=265, y=33)
+btn_clear.place(x=270, y=33)
 btn_export.place(x=350, y=33)
 lbl_qubit.place(x=150, y=5)
 spin_qubit.place(x=245, y=6)
 radio_result.place(x=0, y=70)
 radio_binary.place(x=0, y=93)
-radio_digit.place(x=185, y=70)
-radio_all.place(x=185, y=93)
+radio_digit.place(x=215, y=70)
+radio_all.place(x=215, y=93)
 lbl_autogen.place(x=325, y=5)
-spin_autogen.place(x=430, y=6)
+spin_autogen.place(x=445, y=6)
 txt_view.place(x=0, y=125)
 btn_auto.place(x=440, y=33)
-btn_stat.place(x=380, y=70)
-radio_br.place(x=590, y=35)
-radio_hm.place(x=590, y=57)
-radio_sc.place(x=590, y=79)
-lbl_backend.place(x=508, y=5)
-drop_menu.place(x=578, y=3)
-btn_shors.place(x=705, y=35)
+btn_stat.place(x=465, y=70)
+radio_br.place(x=698, y=35)
+radio_hm.place(x=698, y=57)
+radio_sc.place(x=698, y=79)
+lbl_backend.place(x=534, y=5)
+drop_menu.place(x=614, y=3)
+btn_shors.place(x=745, y=3)
 #Keyboard bind
 window.bind('<F1>', help)   #add keyboard trigger F1
 window.bind('<Control_L><g>', generate) #add keyboard trigger Ctrl+g
