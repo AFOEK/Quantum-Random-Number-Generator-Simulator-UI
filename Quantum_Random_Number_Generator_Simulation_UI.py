@@ -11,7 +11,7 @@ from qiskit import *
 from tkinter import font as Font
 from qiskit.algorithms.factorizers import Shor
 
-__version__ = "0.1.0rc1.1"
+__version__ = "0.1.0rc1.4"
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
@@ -306,8 +306,23 @@ def factorize(event=None):
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
     backend = option_var.get()
-    
 
+def real_device(event = None):
+    global API_CODE
+    window_real = Toplevel(window)
+    window_real.title("IBM QX API Code")
+    window_real.geometry("150x345")
+    window_real.configure(bg="white")
+    window_real.focus_force()
+    logo = PhotoImage(file = get_path+'/quantum.png')
+    window_real.iconphoto(False, logo)
+    #Label init
+    lbl_input = Label(window_real, text="Soon", font=25, justify="left", anchor="e")
+    #place widget using relative layout
+    lbl_input.place(x=75, y=172)
+
+#set API code
+API_CODE = ""
 #get the path for file
 get_path = os.getcwd()
 #Set option value for drop down menu
