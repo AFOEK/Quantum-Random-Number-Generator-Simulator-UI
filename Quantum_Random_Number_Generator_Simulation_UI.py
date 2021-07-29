@@ -210,6 +210,8 @@ def generate(event=None):
     shot = int(spin_shots.get())
     q = int(spin_qubit.get())
     backend = option_var.get()
+    if((backend == 'ibmq_qasm_simulator') or (backend == 'ibmqx2') or (backend == 'ibmq_armonk') or (backend == 'ibmq_santiago') or (backend == 'ibmq_bogota') or (backend == 'ibmq_lima') or (backend == 'ibmq_belem') or (backend == 'ibmq_quito') or (backend == 'ibmq_manila') or (backend == 'simulator_statevector') or (backend == 'simulator_mps') or (backend == 'simulator_extended_stabilizer') or (backend == 'simulator_stabilizer')):
+        real_device()
     circ = QuantumCircuit(q,q)  #init quantum circuit
     if(q==1):
         for i in range(0,q):
@@ -236,7 +238,7 @@ def generate(event=None):
         sim = Aer.get_backend(backend) #get qiskit simulator
         job = execute(circ, sim, shots = int(shot))   #execute job using existing circuit, simulator, and number of shot
         result = job.result()   #get the job result
-        count = result.get_counts(circ) #get the probability count datatype→dict
+        count = result.get_counts(circ) #get the IBMQ.save_account(entry_api.get())probability count datatype→dict
         max_prob = max(count, key=count.get)    #get the highest probability from the count
         number.append(max_prob) #append all generated number to list
     strings = [str(number) for number in number]    #convert all number in list become a list string
@@ -307,20 +309,37 @@ def factorize(event=None):
     shot = int(spin_shots.get())
     backend = option_var.get()
 
+def callback():
+    global button_call_back
+    button_call_back = not button_call_back
+
 def real_device(event = None):
     global API_CODE
     window_real = Toplevel(window)
     window_real.title("IBM QX API Code")
-    window_real.geometry("150x345")
+    window_real.geometry("355x70")
     window_real.configure(bg="white")
     window_real.focus_force()
     logo = PhotoImage(file = get_path+'/quantum.png')
     window_real.iconphoto(False, logo)
     #Label init
-    lbl_input = Label(window_real, text="Soon", font=25, justify="left", anchor="e")
+    lbl_api = Label(window_real, text="Input your API Code:", font=14, justify="left", anchor="e")
+    #Entry init
+    entry_api = Entry(window_real, show = "*")
+    #Button init
+    btn_submit = Button(window_real, text="Submit", font=14, padx=10, cursor="hand2", command=callback)
     #place widget using relative layout
-    lbl_input.place(x=75, y=172)
+    lbl_api.place(x=10, y=3)
+    entry_api.place(x=185, y=3)
+    btn_submit.place(x=10,y=30)
+    if(button_call_back == True):
+        API_CODE = entry_api.get()
+        IBMQ.save_account(API_CODE, overwrite=True)
+    else:
+        messagebox.showerror(title="ERROR", message="Failed to save API code !")
 
+#set button call back
+button_call_back = False
 #set API code
 API_CODE = ""
 #get the path for file
@@ -333,7 +352,20 @@ options = [
     "aer_simulator_stabilizer",
     "aer_simulator_statevector",
     "aer_simulator_density_matrix",
-    "aer_simulator_matrix_product_state"
+    "aer_simulator_matrix_product_state",
+    "ibmq_qasm_simulator",
+    "ibmqx2",
+    "ibmq_armonk",
+    "ibmq_santiago",
+    "ibmq_bogota",
+    'ibmq_lima',
+    'ibmq_belem',
+    'ibmq_quito',
+    'ibmq_manila',
+    'simulator_statevector',
+    'simulator_mps',
+    'simulator_extended_stabilizer',
+    'simulator_stabilizer',
 ]
 #init all Tkinter UI and Settings
 window = Tk()
@@ -348,7 +380,7 @@ varCheck1.set(1)
 var.set(1)
 option_var.set(options[0])
 qubit_var.set("1024")
-window.geometry("850x365")
+window.geometry("950x365")
 photo = PhotoImage(file = get_path+'/quantum.png')
 window.iconphoto(False, photo)
 window.tk.call('tk','scaling','1')
