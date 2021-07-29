@@ -84,6 +84,8 @@ def auto_gen(event=None):
     shot=int(spin_shots.get())
     q=int(spin_qubit.get())
     backend = option_var.get()
+    if((backend == 'ibmq_qasm_simulator') or (backend == 'ibmqx2') or (backend == 'ibmq_armonk') or (backend == 'ibmq_santiago') or (backend == 'ibmq_bogota') or (backend == 'ibmq_lima') or (backend == 'ibmq_belem') or (backend == 'ibmq_quito') or (backend == 'ibmq_manila') or (backend == 'simulator_statevector') or (backend == 'simulator_mps') or (backend == 'simulator_extended_stabilizer') or (backend == 'simulator_stabilizer')):
+        real_device()
     iteration=int(spin_autogen.get())
     rslt_list = []
     freq = {}
@@ -308,6 +310,8 @@ def factorize(event=None):
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
     backend = option_var.get()
+    if((backend == 'ibmq_qasm_simulator') or (backend == 'ibmqx2') or (backend == 'ibmq_armonk') or (backend == 'ibmq_santiago') or (backend == 'ibmq_bogota') or (backend == 'ibmq_lima') or (backend == 'ibmq_belem') or (backend == 'ibmq_quito') or (backend == 'ibmq_manila') or (backend == 'simulator_statevector') or (backend == 'simulator_mps') or (backend == 'simulator_extended_stabilizer') or (backend == 'simulator_stabilizer')):
+        real_device()
 
 def callback():
     global button_call_back
