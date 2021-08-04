@@ -10,6 +10,7 @@ from tkinter import *
 from tkinter import messagebox
 from qiskit import *
 from tkinter import font as Font
+from qiskit.provider.ibmq.exception as ex
 from qiskit.algorithms.factorizers import Shor
 
 __version__ = "0.1.0rc1.4"
@@ -314,8 +315,12 @@ def factorize(event=None):
         real_device()
 
 def callback():
-    global button_call_back
-    button_call_back = not button_call_back
+    global button_val
+    button_val += 1
+    if button_val == 0:
+        return True
+    else:
+        return False
 
 def real_device(event = None):
     global API_CODE
@@ -336,14 +341,13 @@ def real_device(event = None):
     lbl_api.place(x=10, y=3)
     entry_api.place(x=185, y=3)
     btn_submit.place(x=10,y=30)
-    if(button_call_back == True):
-        API_CODE = entry_api.get()
-        IBMQ.save_account(API_CODE, overwrite=True)
-    else:
-        messagebox.showerror(title="ERROR", message="Failed to save API code !")
+    try:
+        if((entry_api.get() != "") and (API_CODE == "") and (callback() == True)):
+            API_CODE = entry_api.get()
+            IBMQ.save_account(API_CODE, overwrite=True)
+    except ex.IBMQAccountCredentialsInvalidToken:
+                messagebox.showerror(title="Invalid API Code", message="Please check your code !")
 
-#set button call back
-button_call_back = False
 #set API code
 API_CODE = ""
 #get the path for file
