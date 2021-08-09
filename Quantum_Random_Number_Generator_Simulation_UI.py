@@ -10,10 +10,10 @@ from tkinter import *
 from tkinter import messagebox
 from qiskit import *
 from tkinter import font as Font
-from qiskit.provider.ibmq.exception as ex
+import qiskit.providers.exceptions as ex
 from qiskit.algorithms.factorizers import Shor
 
-__version__ = "0.1.0rc1.4"
+__version__ = "0.1.0rc1.8"
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
@@ -302,6 +302,7 @@ def factorize(event=None):
     lbl_rslt = Label(window3,text="Soon",font=25, justify="left", anchor="e")
     #place widget using relative layout
     lbl_rslt.place(x=125, y=150)
+    #try if the generate result is not empty and successfully created
     try:
         result = generate.rslt
         bit_string = generate.bit_string
@@ -318,12 +319,14 @@ def callback():
     global button_val
     button_val += 1
     if button_val == 0:
+        button_val = -1
         return True
     else:
+        button_val = -1
         return False
 
 def real_device(event = None):
-    global API_CODE
+    global API_CODE, button_val
     window_real = Toplevel(window)
     window_real.title("IBM QX API Code")
     window_real.geometry("355x70")
@@ -342,30 +345,33 @@ def real_device(event = None):
     entry_api.place(x=185, y=3)
     btn_submit.place(x=10,y=30)
     try:
-        if((entry_api.get() != "") and (API_CODE == "") and (callback() == True)):
+        if((entry_api.get() != "") and (API_CODE == "") and (callback() == True) and (button_val == 0)):
             API_CODE = entry_api.get()
             IBMQ.save_account(API_CODE, overwrite=True)
-    except ex.IBMQAccountCredentialsInvalidToken:
-                messagebox.showerror(title="Invalid API Code", message="Please check your code !")
+            IBMQ.load_account()
+    except ex.QiskitBackendNotFoundError:
+        messagebox.showerror(title="Failed to get Qiskit backend", message="Please check your account backend availbility !")
 
 #set API code
 API_CODE = ""
+#set initial button value
+button_val = -1
 #get the path for file
 get_path = os.getcwd()
 #Set option value for drop down menu
 options = [
-    "aer_simulator",
-    "qasm_simulator",
-    "statevector_simulator",
-    "aer_simulator_stabilizer",
-    "aer_simulator_statevector",
-    "aer_simulator_density_matrix",
-    "aer_simulator_matrix_product_state",
-    "ibmq_qasm_simulator",
-    "ibmqx2",
-    "ibmq_armonk",
-    "ibmq_santiago",
-    "ibmq_bogota",
+    'aer_simulator',
+    'qasm_simulator',
+    'statevector_simulator',
+    'aer_simulator_stabilizer',
+    'aer_simulator_statevector',
+    'aer_simulator_density_matrix',
+    'aer_simulator_matrix_product_state',
+    'ibmq_qasm_simulator',
+    'ibmqx2',
+    'ibmq_armonk',
+    'ibmq_santiago',
+    'ibmq_bogota',
     'ibmq_lima',
     'ibmq_belem',
     'ibmq_quito',
