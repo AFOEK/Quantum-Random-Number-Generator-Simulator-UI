@@ -344,13 +344,14 @@ def real_device(event = None):
     lbl_api.place(x=10, y=3)
     entry_api.place(x=185, y=3)
     btn_submit.place(x=10,y=30)
-    try:
-        if((entry_api.get() != "") and (API_CODE == "") and (callback() == True) and (button_val == 0)):
-            API_CODE = entry_api.get()
-            IBMQ.save_account(API_CODE, overwrite=True)
-            IBMQ.load_account()
-    except ex.QiskitBackendNotFoundError:
-        messagebox.showerror(title="Failed to get Qiskit backend", message="Please check your account backend availbility !")
+    if((callback() == True) or (button_val == 0)):
+        try:
+            if(len((entry_api.get()) != 0) and (API_CODE == "")):
+                API_CODE = entry_api.get()
+                IBMQ.save_account(API_CODE, overwrite=True)
+                IBMQ.load_account()
+        except ex.QiskitBackendNotFoundError:
+            messagebox.showerror(title="Failed to get Qiskit backend", message="Please check your account backend availbility !")
 
 #set API code
 API_CODE = ""
