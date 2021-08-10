@@ -343,9 +343,9 @@ def real_device():
     lbl_api.place(x=10, y=3)
     entry_api.place(x=185, y=3)
     btn_submit.place(x=10,y=30)
-    api_len = len(entry_string.get())
-    if(api_len != 0):
-        if(button_val == True):
+    if(button_val == True):
+        api_len = len(entry_string.get())
+        if(api_len != 0):
             button_val = False
             API_CODE = entry_string.get()
             IBMQ.save_account(API_CODE, overwrite=True)
