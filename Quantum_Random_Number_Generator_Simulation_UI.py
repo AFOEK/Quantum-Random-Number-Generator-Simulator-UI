@@ -12,8 +12,9 @@ from qiskit import *
 from tkinter import font as Font
 import qiskit.providers.exceptions as ex
 from qiskit.algorithms.factorizers import Shor
+from re import search
 
-__version__ = "0.1.0rc1.8"
+__version__ = "0.1.1rc1"
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
@@ -85,8 +86,9 @@ def auto_gen(event=None):
     shot=int(spin_shots.get())
     q=int(spin_qubit.get())
     backend = option_var.get()
-    if((backend == 'ibmq_qasm_simulator') or (backend == 'ibmqx2') or (backend == 'ibmq_armonk') or (backend == 'ibmq_santiago') or (backend == 'ibmq_bogota') or (backend == 'ibmq_lima') or (backend == 'ibmq_belem') or (backend == 'ibmq_quito') or (backend == 'ibmq_manila') or (backend == 'simulator_statevector') or (backend == 'simulator_mps') or (backend == 'simulator_extended_stabilizer') or (backend == 'simulator_stabilizer')):
+    if((search('^ibmq', backend)) or (search('^simulator', backend))):
         real_device()
+        window.wait_window(real_device.window_real)
     iteration=int(spin_autogen.get())
     rslt_list = []
     freq = {}
@@ -213,8 +215,9 @@ def generate(event=None):
     shot = int(spin_shots.get())
     q = int(spin_qubit.get())
     backend = option_var.get()
-    if((backend == 'ibmq_qasm_simulator') or (backend == 'ibmqx2') or (backend == 'ibmq_armonk') or (backend == 'ibmq_santiago') or (backend == 'ibmq_bogota') or (backend == 'ibmq_lima') or (backend == 'ibmq_belem') or (backend == 'ibmq_quito') or (backend == 'ibmq_manila') or (backend == 'simulator_statevector') or (backend == 'simulator_mps') or (backend == 'simulator_extended_stabilizer') or (backend == 'simulator_stabilizer')):
+    if((search('^ibmq', backend)) or (search('^simulator', backend))):
         real_device()
+        window.wait_window(real_device.window_real)
     circ = QuantumCircuit(q,q)  #init quantum circuit
     if(q==1):
         for i in range(0,q):
@@ -312,51 +315,49 @@ def factorize(event=None):
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
     backend = option_var.get()
-    if((backend == 'ibmq_qasm_simulator') or (backend == 'ibmqx2') or (backend == 'ibmq_armonk') or (backend == 'ibmq_santiago') or (backend == 'ibmq_bogota') or (backend == 'ibmq_lima') or (backend == 'ibmq_belem') or (backend == 'ibmq_quito') or (backend == 'ibmq_manila') or (backend == 'simulator_statevector') or (backend == 'simulator_mps') or (backend == 'simulator_extended_stabilizer') or (backend == 'simulator_stabilizer')):
+    if((search('^ibmq', backend)) or (search('^simulator', backend))):
         real_device()
+        window.wait_window(real_device.window_real)
 
 def callback():
     global button_val
-    button_val += 1
-    if button_val == 0:
-        button_val = -1
-        return True
-    else:
-        button_val = -1
-        return False
+    button_val = not button_val
+    button_val = False
 
-def real_device(event = None):
+def real_device():
     global API_CODE, button_val
-    window_real = Toplevel(window)
-    window_real.title("IBM QX API Code")
-    window_real.geometry("355x70")
-    window_real.configure(bg="white")
-    window_real.focus_force()
+    real_device.window_real = Toplevel(window)
+    real_device.window_real.title("IBM QX API Code")
+    real_device.window_real.geometry("355x70")
+    real_device.window_real.configure(bg="white")
+    real_device.window_real.focus_force()
     logo = PhotoImage(file = get_path+'/quantum.png')
-    window_real.iconphoto(False, logo)
+    real_device.window_real.iconphoto(False, logo)
     #Label init
-    lbl_api = Label(window_real, text="Input your API Code:", font=14, justify="left", anchor="e")
+    lbl_api = Label(real_device.window_real, text="Input your API Code:", font=14, justify="left", anchor="e")
     #Entry init
-    entry_api = Entry(window_real, show = "*")
+    entry_api = Entry(real_device.window_real, show = "*")
     #Button init
-    btn_submit = Button(window_real, text="Submit", font=14, padx=10, cursor="hand2", command=callback)
+    btn_submit = Button(real_device.window_real, text="Submit", font=14, padx=10, cursor="hand2", command=callback)
     #place widget using relative layout
     lbl_api.place(x=10, y=3)
     entry_api.place(x=185, y=3)
     btn_submit.place(x=10,y=30)
-    if((callback() == True) or (button_val == 0)):
-        try:
-            if(len((entry_api.get()) != 0) and (API_CODE == "")):
-                API_CODE = entry_api.get()
-                IBMQ.save_account(API_CODE, overwrite=True)
-                IBMQ.load_account()
-        except ex.QiskitBackendNotFoundError:
+    if(button_val == True):
+        api_len = len(entry_api.get())
+        print("ok ya")
+        if((api_len != 0) and (API_CODE == "")):
+            print("OK")
+            API_CODE = entry_api.get()
+            IBMQ.save_account(API_CODE, overwrite=True)
+            IBMQ.load_account()
+        else:
             messagebox.showerror(title="Failed to get Qiskit backend", message="Please check your account backend availbility !")
 
 #set API code
 API_CODE = ""
 #set initial button value
-button_val = -1
+button_val = False
 #get the path for file
 get_path = os.getcwd()
 #Set option value for drop down menu
