@@ -1,6 +1,6 @@
-pandas>=1.1.5
-numpy>=1.19.5
-qiskit>=0.27.0
-tk>=0.1.0
-matplotlib>=3.3.4
-seaborn>=0.11.1
+pandas
+numpy
+qiskit[all]
+tk
+matplotlib
+seaborn

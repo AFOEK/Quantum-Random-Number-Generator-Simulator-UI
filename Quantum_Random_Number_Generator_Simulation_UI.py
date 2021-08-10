@@ -244,7 +244,7 @@ def generate(event=None):
         sim = Aer.get_backend(backend) #get qiskit simulator
         job = execute(circ, sim, shots = int(shot))   #execute job using existing circuit, simulator, and number of shot
         result = job.result()   #get the job result
-        count = result.get_counts(circ) #get the IBMQ.save_account(entry_api.get())probability count datatype→dict
+        count = result.get_counts(circ) #get the state probability count datatype→dict
         max_prob = max(count, key=count.get)    #get the highest probability from the count
         number.append(max_prob) #append all generated number to list
     strings = [str(number) for number in number]    #convert all number in list become a list string
@@ -322,7 +322,6 @@ def factorize(event=None):
 def callback():
     global button_val
     button_val = not button_val
-    button_val = False
 
 def real_device():
     global API_CODE, button_val
@@ -333,26 +332,28 @@ def real_device():
     real_device.window_real.focus_force()
     logo = PhotoImage(file = get_path+'/quantum.png')
     real_device.window_real.iconphoto(False, logo)
+    entry_string = StringVar(real_device.window_real)
     #Label init
     lbl_api = Label(real_device.window_real, text="Input your API Code:", font=14, justify="left", anchor="e")
     #Entry init
-    entry_api = Entry(real_device.window_real, show = "*")
+    entry_api = Entry(real_device.window_real, show = "*", font=14, textvariable = entry_string)
     #Button init
     btn_submit = Button(real_device.window_real, text="Submit", font=14, padx=10, cursor="hand2", command=callback)
     #place widget using relative layout
     lbl_api.place(x=10, y=3)
     entry_api.place(x=185, y=3)
     btn_submit.place(x=10,y=30)
-    if(button_val == True):
-        api_len = len(entry_api.get())
-        print("ok ya")
-        if((api_len != 0) and (API_CODE == "")):
-            print("OK")
-            API_CODE = entry_api.get()
+    api_len = len(entry_string.get())
+    if(api_len != 0):
+        if(button_val == True):
+            button_val = False
+            API_CODE = entry_string.get()
             IBMQ.save_account(API_CODE, overwrite=True)
             IBMQ.load_account()
         else:
-            messagebox.showerror(title="Failed to get Qiskit backend", message="Please check your account backend availbility !")
+            messagebox.showerror(title="Failed to set Qiskit API code", message="Please check your API code !")
+    else:
+        messagebox.showerror(title="Failed to set Qiskit API code", message="API Code cannot empty !")
 
 #set API code
 API_CODE = ""
