@@ -344,16 +344,14 @@ def real_device():
     entry_api.place(x=185, y=3)
     btn_submit.place(x=10,y=30)
     if(button_val == True):
-        api_len = len(entry_string.get())
+        button_val = False
+        API_CODE = entry_string.get()
+        api_len = len(API_CODE)
         if(api_len != 0):
-            button_val = False
-            API_CODE = entry_string.get()
             IBMQ.save_account(API_CODE, overwrite=True)
             IBMQ.load_account()
         else:
-            messagebox.showerror(title="Failed to set Qiskit API code", message="Please check your API code !")
-    else:
-        messagebox.showerror(title="Failed to set Qiskit API code", message="API Code cannot empty !")
+            messagebox.showerror(title="Failed to set Qiskit API code", message="API code cannot be empty!")
 
 #set API code
 API_CODE = ""
