@@ -343,15 +343,11 @@ def real_device():
     lbl_api.place(x=10, y=3)
     entry_api.place(x=185, y=3)
     btn_submit.place(x=10,y=30)
-    if(button_val == True):
-        button_val = False
+    while(button_val != True):
         API_CODE = entry_string.get()
-        api_len = len(API_CODE)
-        if(api_len != 0):
-            IBMQ.save_account(API_CODE, overwrite=True)
-            IBMQ.load_account()
-        else:
-            messagebox.showerror(title="Failed to set Qiskit API code", message="API code cannot be empty!")
+        IBMQ.save_account(API_CODE, overwrite=True)
+        IBMQ.load_account()
+    button_val = False
 
 #set API code
 API_CODE = ""
