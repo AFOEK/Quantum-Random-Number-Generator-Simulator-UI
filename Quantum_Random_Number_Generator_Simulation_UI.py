@@ -10,7 +10,7 @@ from tkinter import *
 from tkinter import messagebox
 from qiskit import *
 from tkinter import font as Font
-import qiskit.providers.exceptions as ex
+import qiskit.providers.ibmq.exceptions as ex
 from qiskit.algorithms.factorizers import Shor
 from re import search
 
@@ -322,9 +322,12 @@ def factorize(event=None):
 
 def callback():
     global API_CODE
-    API_CODE = real_device.entry_string.get()
-    IBMQ.save_account(API_CODE, overwrite=True)
-    IBMQ.load_account()
+    try:
+        API_CODE = real_device.entry_string.get()
+        IBMQ.save_account(API_CODE, overwrite=True)
+        IBMQ.load_account()
+    except ex.IBMQAccountCredentialsInvalidToken :
+        messagebox.showerror("API token not valid","Please re-check your API code !")
 
 def real_device():
     real_device.window_real = Toplevel(window)
