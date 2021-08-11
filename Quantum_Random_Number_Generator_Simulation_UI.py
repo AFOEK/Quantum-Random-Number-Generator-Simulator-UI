@@ -86,9 +86,6 @@ def auto_gen(event=None):
     shot=int(spin_shots.get())
     q=int(spin_qubit.get())
     backend = option_var.get()
-    if((search('^ibmq', backend)) or (search('^simulator', backend))):
-        real_device()
-        window.wait_window(real_device.window_real)
     iteration=int(spin_autogen.get())
     rslt_list = []
     freq = {}
@@ -215,9 +212,6 @@ def generate(event=None):
     shot = int(spin_shots.get())
     q = int(spin_qubit.get())
     backend = option_var.get()
-    if((search('^ibmq', backend)) or (search('^simulator', backend))):
-        real_device()
-        window.wait_window(real_device.window_real)
     circ = QuantumCircuit(q,q)  #init quantum circuit
     if(q==1):
         for i in range(0,q):
@@ -316,38 +310,6 @@ def factorize(event=None):
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
     backend = option_var.get()
-    if((search('^ibmq', backend)) or (search('^simulator', backend))):
-        real_device()
-        window.wait_window(real_device.window_real)
-
-def callback():
-    global API_CODE
-    try:
-        API_CODE = real_device.entry_string.get()
-        IBMQ.save_account(API_CODE, overwrite=True)
-        IBMQ.load_account()
-    except ex.IBMQAccountCredentialsInvalidToken :
-        messagebox.showerror("API token not valid","Please re-check your API code !")
-
-def real_device():
-    real_device.window_real = Toplevel(window)
-    real_device.window_real.title("IBM QX API Code")
-    real_device.window_real.geometry("355x70")
-    real_device.window_real.configure(bg="white")
-    real_device.window_real.focus_force()
-    logo = PhotoImage(file = get_path+'/quantum.png')
-    real_device.window_real.iconphoto(False, logo)
-    real_device.entry_string = StringVar(real_device.window_real)
-    #Label init
-    lbl_api = Label(real_device.window_real, text="Input your API Code:", font=14, justify="left", anchor="e")
-    #Entry init
-    real_device.entry_api = Entry(real_device.window_real, show = "*", font=14, textvariable = real_device.entry_string)
-    #Button init
-    btn_submit = Button(real_device.window_real, text="Submit", font=14, padx=10, cursor="hand2", command=callback)
-    #place widget using relative layout
-    lbl_api.place(x=10, y=3)
-    real_device.entry_api.place(x=185, y=3)
-    btn_submit.place(x=10,y=30)
 
 #main  program
 #set API code
@@ -362,20 +324,7 @@ options = [
     'aer_simulator_stabilizer',
     'aer_simulator_statevector',
     'aer_simulator_density_matrix',
-    'aer_simulator_matrix_product_state',
-    'ibmq_qasm_simulator',
-    'ibmqx2',
-    'ibmq_armonk',
-    'ibmq_santiago',
-    'ibmq_bogota',
-    'ibmq_lima',
-    'ibmq_belem',
-    'ibmq_quito',
-    'ibmq_manila',
-    'simulator_statevector',
-    'simulator_mps',
-    'simulator_extended_stabilizer',
-    'simulator_stabilizer',
+    'aer_simulator_matrix_product_state'
 ]
 #init all Tkinter UI and Settings
 window = Tk()
