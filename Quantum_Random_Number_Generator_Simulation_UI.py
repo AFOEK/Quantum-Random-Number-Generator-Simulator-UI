@@ -294,6 +294,7 @@ def select_all(event=None):
     var.set(4)
 
 def factorize(event=None):
+    global API_CODE
     window3 = Toplevel(window)
     window3.title("Factorize")
     window3.geometry("300x400")
@@ -320,11 +321,12 @@ def factorize(event=None):
         window.wait_window(real_device.window_real)
 
 def callback():
-    global button_val
-    button_val = not button_val
+    global API_CODE
+    API_CODE = real_device.entry_string.get()
+    IBMQ.save_account(API_CODE, overwrite=True)
+    IBMQ.load_account()
 
 def real_device():
-    global API_CODE, button_val
     real_device.window_real = Toplevel(window)
     real_device.window_real.title("IBM QX API Code")
     real_device.window_real.geometry("355x70")
@@ -332,27 +334,21 @@ def real_device():
     real_device.window_real.focus_force()
     logo = PhotoImage(file = get_path+'/quantum.png')
     real_device.window_real.iconphoto(False, logo)
-    entry_string = StringVar(real_device.window_real)
+    real_device.entry_string = StringVar(real_device.window_real)
     #Label init
     lbl_api = Label(real_device.window_real, text="Input your API Code:", font=14, justify="left", anchor="e")
     #Entry init
-    entry_api = Entry(real_device.window_real, show = "*", font=14, textvariable = entry_string)
+    real_device.entry_api = Entry(real_device.window_real, show = "*", font=14, textvariable = real_device.entry_string)
     #Button init
     btn_submit = Button(real_device.window_real, text="Submit", font=14, padx=10, cursor="hand2", command=callback)
     #place widget using relative layout
     lbl_api.place(x=10, y=3)
-    entry_api.place(x=185, y=3)
+    real_device.entry_api.place(x=185, y=3)
     btn_submit.place(x=10,y=30)
-    while(button_val != True):
-        API_CODE = entry_string.get()
-        IBMQ.save_account(API_CODE, overwrite=True)
-        IBMQ.load_account()
-    button_val = False
 
+#main  program
 #set API code
 API_CODE = ""
-#set initial button value
-button_val = False
 #get the path for file
 get_path = os.getcwd()
 #Set option value for drop down menu
