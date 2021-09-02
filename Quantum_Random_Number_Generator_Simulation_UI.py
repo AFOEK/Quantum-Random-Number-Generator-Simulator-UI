@@ -13,6 +13,9 @@ from tkinter import font as Font
 import qiskit.providers.ibmq.exceptions as ex
 from qiskit.algorithms.factorizers import Shor
 from re import search
+from numpy import *
+import numpy as py
+from math import gcd
 
 __version__ = "0.1.1rc1"
 
@@ -288,7 +291,6 @@ def select_all(event=None):
     var.set(4)
 
 def factorize(event=None):
-    global API_CODE
     window3 = Toplevel(window)
     window3.title("Factorize")
     window3.geometry("300x400")
@@ -296,8 +298,9 @@ def factorize(event=None):
     window3.focus_force()
     photo3 = PhotoImage(file = get_path+'/quantum.png')
     window3.iconphoto(False, photo3)
+    lbl_var = StringVar()
     #Label init
-    lbl_rslt = Label(window3,text="Soon",font=25, justify="left", anchor="e")
+    lbl_rslt = Label(window3,text="Soon",font=25, justify="left", anchor="e", textvariable=lbl_var)
     #place widget using relative layout
     lbl_rslt.place(x=125, y=150)
     #try if the generate result is not empty and successfully created
@@ -310,10 +313,77 @@ def factorize(event=None):
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
     backend = option_var.get()
+    q = int(spin_qubit.get())
+    py.random.seed(1)
+    a = py.random.randint(2,15)
+    factor_found = False
+    attempt = 0
+    while not factor_found:
+        attempt += 1
+        phase = qpe_amod15(a, backend, shot)
+        frac = Fraction(phase).limit_denominator(result)
+        r = frac.denominator
+        if phase != 0:
+            guesses = [gcd(a**(r//2)-1, result), gcd(a**(r//2)+1, result)]
+            for guess in guesses:
+                if guess not in [1,result] and (result % guess) == 0:
+                    
+                    factor_found = True
+
+def control_a_mod_15(a, power):
+    if a not in [2,7,8,11,13]:
+        raise ValueError("'a' must be 2,7,8,11 or 13")
+    U = QuantumCircuit(4)
+    for iteration in range(power):
+        if a in [2,13]:
+            U.swap(0,1)
+            U.swap(1,2)
+            U.swap(2,3)
+        if a in [7,8]:
+            U.swap(2,3)
+            U.swap(1,2)
+            U.swap(0,1)
+        if a == 11:
+            U.swap(1,3)
+            U.swap(0,2)
+        if a in [7,11,13]:
+            for q in range (4):
+                U.x(q)
+    U = U.to_gate()
+    U.name = "%i^%i mod 15" % (a, power)
+    c_U = U.control()
+    return c_U
+
+def qft_dagger(n):
+    qc = QuantumCircuit(n)
+    for qubit in range(n//2):
+        qc.swap(qubit, n-qubit-1)
+    for j in range(n):
+        for m in range(j):
+            qc.cp(-py.pi/float(2**(j-m)), m, j)
+        qc.h(j)
+    qc.name = "QFT†"
+    return qc
+
+def qpe_amod15(a, sims, shots):
+    n_count = 8
+    qc = QuantumCircuit(4+n_count, n_count)
+    for q in range(n_count):
+        qc.h(q)
+    qc.x(3+n_count)
+    for q in range(n_count):
+        qc.append(control_a_mod_15(a,2**q), [q]+[i+n_count for i in range(4)])
+    qc.append(qft_dagger(n_count), range(n_count))
+    qc.measure(range(n_count), range(n_count))
+    sim = Aer.get_backend(sims)
+    t_qc = transpile(qc, sim)
+    qobj = assemble(t_qc, shots=shots)
+    result = aer_sim.run(qobj, memory=True).result()
+    readings = result.get_memory()
+    phase = int(readings[0],2)/(2**n_count)
+    return phase
 
 #main  program
-#set API code
-API_CODE = ""
 #get the path for file
 get_path = os.getcwd()
 #Set option value for drop down menu
