@@ -327,7 +327,7 @@ def factorize(event=None):
             guesses = [gcd(a**(r//2)-1, result), gcd(a**(r//2)+1, result)]
             for guess in guesses:
                 if guess not in [1,result] and (result % guess) == 0:
-                    
+                    lbl_var.set("Non-trivial factor found: "+ str(guess))
                     factor_found = True
 
 def control_a_mod_15(a, power):
