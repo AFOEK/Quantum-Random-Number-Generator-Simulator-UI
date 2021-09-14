@@ -10,8 +10,8 @@ from tkinter import *
 from tkinter import messagebox
 from qiskit import *
 from tkinter import font as Font
-import qiskit.providers.ibmq.exceptions as ex
-from qiskit.algorithms.factorizers import Shor
+from qiskit.algorithms import Shor
+from qiskit.utils import QuantumInstance
 from re import search
 from numpy import *
 import numpy as py
@@ -293,28 +293,31 @@ def select_all(event=None):
 def factorize(event=None):
     window3 = Toplevel(window)
     window3.title("Factorize")
-    window3.geometry("300x400")
+    window3.geometry("100x200")
     window3.configure(bg="white")
     window3.focus_force()
     photo3 = PhotoImage(file = get_path+'/quantum.png')
     window3.iconphoto(False, photo3)
     lbl_var = StringVar()
     #Label init
-    lbl_rslt = Label(window3,text="Soon",font=25, justify="left", anchor="e", textvariable=lbl_var)
+    lbl_text = Label(window3, text="Factor result is: ", font=25, justify="left", anchor="e")
+    lbl_rslt = Label(window3, text="",font=25, justify="left", anchor="e", textvariable=lbl_var)
     #place widget using relative layout
+    lbl_text.place(x=125, y=210)
     lbl_rslt.place(x=125, y=150)
     #try if the generate result is not empty and successfully created
     try:
         result = generate.rslt
-        bit_string = generate.bit_string
-        digit = generate.digit
     except:
         window3.destroy()
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
     backend = option_var.get()
-    q = int(spin_qubit.get())
-
+    quantum_instance = QuantumInstance(backend=backend, shots=shot)
+    shor = Shor(quantum_instance=quantum_instance)
+    rslt = shor.factor(result)
+    lbl_var.set(f"The list of factor of {result} as computed by Shor's algorithm is {rslt.factors[0]}")
+    
 #main  program
 #get the path for file
 get_path = os.getcwd()
