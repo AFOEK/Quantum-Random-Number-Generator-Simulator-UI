@@ -293,18 +293,16 @@ def select_all(event=None):
 def factorize(event=None):
     window3 = Toplevel(window)
     window3.title("Factorize")
-    window3.geometry("100x200")
+    window3.geometry("350x50")
     window3.configure(bg="white")
     window3.focus_force()
     photo3 = PhotoImage(file = get_path+'/quantum.png')
     window3.iconphoto(False, photo3)
     lbl_var = StringVar()
     #Label init
-    lbl_text = Label(window3, text="Factor result is: ", font=25, justify="left", anchor="e")
-    lbl_rslt = Label(window3, text="",font=25, justify="left", anchor="e", textvariable=lbl_var)
+    lbl_rslt = Label(window3, text="",font=25, justify="left", anchor="e", textvariable=lbl_var, bg="white")
     #place widget using relative layout
-    lbl_text.place(x=125, y=210)
-    lbl_rslt.place(x=125, y=150)
+    lbl_rslt.place(x=3, y=3)
     #try if the generate result is not empty and successfully created
     try:
         result = generate.rslt
@@ -316,8 +314,9 @@ def factorize(event=None):
     quantum_instance = QuantumInstance(backend, shots=shot)
     shor = Shor(quantum_instance=quantum_instance)
     rslt = shor.factor(result)
-    lbl_var.set(f"The list of factor of {result} as computed by Shor's algorithm is {rslt.factors[0]}")
-    
+    final_rslt = rslt.factors[0]
+    lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt))
+
 #main  program
 #get the path for file
 get_path = os.getcwd()
@@ -333,6 +332,7 @@ options = [
 ]
 #init all Tkinter UI and Settings
 window = Tk()
+window.configure(bg="white")
 n_var = StringVar(window)
 shots_var = StringVar(window)
 qubit_var = StringVar(window)
@@ -352,38 +352,38 @@ window.title('Quantum Random Number Generator Simulation UI')
 font14 = Font.Font(size=10)
 font11 = Font.Font(size=11)
 #Label init
-lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e", font=14)
-lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e", font=14)
-lbl_qubit = Label(window, text="Qubit count: ", font=14, anchor="e", justify="left")
-lbl_autogen = Label(window, text="Auto Iteration: ", justify="left", anchor="e", font=14)
-lbl_backend = Label(window, text="Backend: ", font=14, justify="left", anchor="e")
+lbl_n = Label(window,text="Iteration: ",justify="left", anchor="e", font=14, bg="white")
+lbl_shots = Label(window, text="Shots: ",justify="left", anchor="e", font=14, bg="white")
+lbl_qubit = Label(window, text="Qubit count: ", font=14, anchor="e", justify="left", bg="white")
+lbl_autogen = Label(window, text="Auto Iteration: ", justify="left", anchor="e", font=14, bg="white")
+lbl_backend = Label(window, text="Backend: ", font=14, justify="left", anchor="e", bg="white")
 #Spinbox init
-spin_n = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True, textvariable=n_var)
-spin_qubit = Spinbox(window, font=14, width=6, repeatdelay=100, repeatinterval=90, wrap=True, from_=1, to=5, textvariable=qubit_var)
-spin_shots = Spinbox(window, font=14, width=6, repeatdelay=200, repeatinterval=90, wrap=True ,values=(32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536), textvariable=shots_var)
-spin_autogen = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True, textvariable=auto_gen_var)
+spin_n = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True, textvariable=n_var,bg="white")
+spin_qubit = Spinbox(window, font=14, width=6, repeatdelay=100, repeatinterval=90, wrap=True, from_=1, to=5, textvariable=qubit_var,bg="white")
+spin_shots = Spinbox(window, font=14, width=6, repeatdelay=200, repeatinterval=90, wrap=True ,values=(32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536), textvariable=shots_var,bg="white")
+spin_autogen = Spinbox(window, font=14, from_=1, to=10000, width=6, repeatdelay=200, repeatinterval=90, wrap=True, textvariable=auto_gen_var,bg="white")
 #Button init
-btn_clear = Button(window, font=14, text="Clear !", padx=10, cursor="hand2", command=clear, underline=0)
-btn_export = Button(window, font=14, text="Export !", padx=10, cursor="hand2", command=exports, underline=0)
-btn_auto = Button(window, font=5, text="Auto Generate !", padx=5, cursor="hand2", command=auto_gen, underline=0)
-btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2", underline=0, repeatdelay=200, repeatinterval=90)
-btn_stat = Button(window, font=14, text="Auto Generator Statistics", padx=10, cursor="hand2", command=get_autogen_stat, underline=15)
-btn_shors = Button(window, font=14, text="Factorize", padx=5, command=factorize, cursor="hand2", underline=0)
+btn_clear = Button(window, font=14, text="Clear !", padx=10, cursor="hand2", command=clear, underline=0,bg="white")
+btn_export = Button(window, font=14, text="Export !", padx=10, cursor="hand2", command=exports, underline=0,bg="white")
+btn_auto = Button(window, font=5, text="Auto Generate !", padx=5, cursor="hand2", command=auto_gen, underline=0,bg="white")
+btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2", underline=0, repeatdelay=200, repeatinterval=90,bg="white")
+btn_stat = Button(window, font=14, text="Auto Generator Statistics", padx=10, cursor="hand2", command=get_autogen_stat, underline=15,bg="white")
+btn_shors = Button(window, font=14, text="Factorize", padx=5, command=factorize, cursor="hand2", underline=0,bg="white")
 #Text init
-txt_view = Text(window, font=14, width=94, wrap=CHAR, xscrollcommand=set())
+txt_view = Text(window, font=14, width=94, wrap=CHAR, xscrollcommand=set(), bg="white")
 #Drop menu init
 drop_menu = OptionMenu(window, option_var, *options)
 drop_menu.config(font=font14)
 option_menu = window.nametowidget(drop_menu.menuname)
 option_menu.config(font=font11)
 #Radio init
-radio_result = Radiobutton(window, font=14, text="Generate result", value=1, variable = var, underline=9)
-radio_binary = Radiobutton(window, font=14, text="Generate binary form", value=2, variable = var, underline=9)
-radio_digit = Radiobutton(window, font=14, text="Generate digit", value=3, variable = var, underline=9)
-radio_all = Radiobutton(window, font=14, text="Generate all information", value=4, variable = var, underline=9)
-radio_br = Radiobutton(window, font=14, text="Bar", variable=varCheck1, underline = 0, value = 1)
-radio_hm = Radiobutton(window, font=14, text="Heat Map", variable=varCheck1, underline = 0, value = 2)
-radio_sc = Radiobutton(window, font=14, text="Scatter Map", variable=varCheck1, underline = 0, value = 3)
+radio_result = Radiobutton(window, font=14, text="Generate result", value=1, variable = var, underline=9, bg="white")
+radio_binary = Radiobutton(window, font=14, text="Generate binary form", value=2, variable = var, underline=9, bg="white")
+radio_digit = Radiobutton(window, font=14, text="Generate digit", value=3, variable = var, underline=9, bg="white")
+radio_all = Radiobutton(window, font=14, text="Generate all information", value=4, variable = var, underline=9, bg="white")
+radio_br = Radiobutton(window, font=14, text="Bar", variable=varCheck1, underline = 0, value = 1, bg="white")
+radio_hm = Radiobutton(window, font=14, text="Heat Map", variable=varCheck1, underline = 0, value = 2, bg="white")
+radio_sc = Radiobutton(window, font=14, text="Scatter Map", variable=varCheck1, underline = 0, value = 3, bg="white")
 #place widget using relative layout
 lbl_n.place(x=0, y=5)
 spin_n.place(x=70, y=6)

@@ -8,6 +8,7 @@ Sample:
 ![result](img/result_app.png)
 ![export_sample](img/export_sample.png)
 ![bar_chart](img/sample_bar_chart.png)
+![factorize](img/factorize.png)
 ![heatmap_chart](img/sample_heatmap_chart.png)
 ![scatter_chart](img/sample_scattermap_chart.png)
 
@@ -25,6 +26,7 @@ For web version you can get from here :
 Future feature:
 - [x] Make a clone for web app and deploy
 - [x] Adding documentation and sample
+- [x] Adding Shor's algorithm for factorization
+- [ ] Adding Option for factorization using _General Number Field Sieve_ (GNFS)
 - [ ] Able to run on real quantum device
-- [ ] Adding Shor's algorithm for factorization
 - [ ] Able to convert little endian ↔ big endian
