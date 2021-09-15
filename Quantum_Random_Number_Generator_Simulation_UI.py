@@ -313,7 +313,7 @@ def factorize(event=None):
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
     backend = option_var.get()
-    quantum_instance = QuantumInstance(backend=backend, shots=shot)
+    quantum_instance = QuantumInstance(backend, shots=shot)
     shor = Shor(quantum_instance=quantum_instance)
     rslt = shor.factor(result)
     lbl_var.set(f"The list of factor of {result} as computed by Shor's algorithm is {rslt.factors[0]}")
