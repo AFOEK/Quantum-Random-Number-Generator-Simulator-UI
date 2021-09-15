@@ -6,9 +6,9 @@ We can choose what chart what we want, little advice if you want visualize small
 Sample:
 ![UI](img/main_app.png)
 ![result](img/result_app.png)
+![factorize](img/factorize.png)
 ![export_sample](img/export_sample.png)
 ![bar_chart](img/sample_bar_chart.png)
-![factorize](img/factorize.png)
 ![heatmap_chart](img/sample_heatmap_chart.png)
 ![scatter_chart](img/sample_scattermap_chart.png)
 
