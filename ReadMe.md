@@ -1,7 +1,7 @@
 This a GUI application build using Tkinter and Qiskit, which it will generate a random number from (n) H-gate,
 it will created a random number using combination of (n) measured qubit with highest frequency.
 All number bit string are stored into a list, after that converted into binary and finally converted into integer.
-We can choose what chart what we want, little advice if you want visualize small set of data you can use Bar Map and for big set of data you can use Scatter Map.
+We can choose what chart what we want, little advice if you want visualize small set of data you can use Bar Map and for big set of data you can use Scatter Map. After generate a number you can factorize that number using Shor's algorithm.
 
 Sample:
 
@@ -26,8 +26,9 @@ For web version you can get from here :
 
 Future feature:
 - [x] Make a clone for web app and deploy
-- [x] Adding documentation and sample
-- [x] Adding Shor's algorithm for factorization
+- [x] Add documentation and sample
+- [x] Add Shor's algorithm for factorization
+- [x] Add GPU option to run quantum circuit(Nvidia GPU)
 - [ ] Adding Option for factorization using _General Number Field Sieve_ (GNFS)
 - [ ] Able to run on real quantum device
 - [ ] Able to convert little endian ↔ big endian
