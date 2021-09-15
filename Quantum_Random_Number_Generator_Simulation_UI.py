@@ -312,7 +312,7 @@ def factorize(event=None):
         window3.destroy()
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
-    backend = option_var.get()
+    backend = Aer.get_backend(option_var.get())
     quantum_instance = QuantumInstance(backend, shots=shot)
     shor = Shor(quantum_instance=quantum_instance)
     rslt = shor.factor(result)
