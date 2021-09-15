@@ -4,3 +4,4 @@ qiskit[all]
 tk
 matplotlib
 seaborn
+numba

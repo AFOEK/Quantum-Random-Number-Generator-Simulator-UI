@@ -17,7 +17,7 @@ from numpy import *
 import numpy as py
 from math import gcd
 
-__version__ = "0.1.1rc1"
+__version__ = "0.2.3rc4"
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
