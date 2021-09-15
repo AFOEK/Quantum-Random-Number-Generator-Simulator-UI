@@ -16,6 +16,7 @@ from re import search
 from numpy import *
 import numpy as py
 from math import gcd
+from qiskit.providers.aer import AerError
 
 __version__ = "0.2.3rc4"
 
@@ -117,7 +118,14 @@ def auto_gen(event=None):
                 circ.measure(i,i)
         number = [] #init a list  
         for i in range(0,int(n)):   #how many iteration which effect how many digit created
-            sim = Aer.get_backend(backend) #get qiskit simulator
+            if(search("gpu", backend)):
+                try:
+                    sim = Aer.get_backend(backend.replace('_gpu',''))
+                    sim.set_options(device='GPU')
+                except AerError:
+                    pass
+            else:
+                sim = Aer.get_backend(backend) #get qiskit simulator
             job = execute(circ, sim, shots = int(shot))   #execute job using existing circuit, simulator, and number of shot
             result = job.result()   #get the job result
             count = result.get_counts(circ) #get the probability count datatype→dict
@@ -240,7 +248,14 @@ def generate(event=None):
             circ.measure(i,i)
     number = [] #init a list  
     for i in range(0,int(n)):   #how many iteration which effect how many digit created
-        sim = Aer.get_backend(backend) #get qiskit simulator
+        if(search("gpu", backend)):
+            try:
+                sim = Aer.get_backend(backend.replace('_gpu',''))
+                sim.set_options(device='GPU')
+            except AerError:
+                pass
+        else:
+            sim = Aer.get_backend(backend) #get qiskit simulator
         job = execute(circ, sim, shots = int(shot))   #execute job using existing circuit, simulator, and number of shot
         result = job.result()   #get the job result
         count = result.get_counts(circ) #get the state probability count datatype→dict
@@ -313,9 +328,17 @@ def factorize(event=None):
         window3.destroy()
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
-    backend = Aer.get_backend(option_var.get())
+    backend = option_var.get()
+    if(search("gpu", backend)):
+        try:
+            sim = Aer.get_backend(backend.replace('_gpu',''))
+            sim.set_options(device='GPU')
+        except AerError:
+            pass
+    else:
+        sim = Aer.get_backend(backend) #get qiskit simulator
     #init quantum instance and Shor's algorithm
-    quantum_instance = QuantumInstance(backend, shots=shot)
+    quantum_instance = QuantumInstance(sim, shots=shot)
     shor = Shor(quantum_instance=quantum_instance)
     rslt = shor.factor(result)
     final_rslt = rslt.factors[0]
@@ -343,7 +366,13 @@ options = [
     'aer_simulator_stabilizer',
     'aer_simulator_statevector',
     'aer_simulator_density_matrix',
-    'aer_simulator_matrix_product_state'
+    'aer_simulator_matrix_product_state',
+    'aer_simulator_gpu',
+    'qasm_simulator_gpu',
+    'statevector_simulator_gpu',
+    'aer_simulator_statevector_gpu',
+    'aer_simulator_density_matrix_gpu',
+    'aer_simulator_matrix_product_state_gpu',
 ]
 #init all Tkinter UI and Settings
 window = Tk()
