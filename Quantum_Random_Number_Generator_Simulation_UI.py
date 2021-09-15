@@ -28,22 +28,23 @@ def get_autogen_stat(event=None):
     photo2 = PhotoImage(file = get_path+'/quantum.png')
     window2.iconphoto(False, photo2)
     window2.bind('<F1>', help)   #add keyboard trigger F1
+    #Check if dataframe is exist
     try:
         dat_frame = auto_gen.df
-    except:
+    except:     #handling empty datafrane
         window2.destroy()
         messagebox.showerror("Error","You need auto generate number before use this tools")
-    if(str(varCheck1.get()) == "1"):
-        figure = plt.Figure(figsize=(6,6), dpi=110)
-        ax = figure.add_subplot(111)
-        chart = FigureCanvasTkAgg(figure, window2)
-        chart.draw()
-        chart.get_tk_widget().place(x=5,y=5)
-        dat_frame.plot(x="Number", y="Frequency",kind='bar', legend=True, ax=ax)
-        ax.set_title("Frequency distribution among generated random number")
+    if(str(varCheck1.get()) == "1"):    #check if option bar char is checked
+        figure = plt.Figure(figsize=(6,6), dpi=110) #init figure for matplotlib
+        ax = figure.add_subplot(111)    #add new sub plot
+        chart = FigureCanvasTkAgg(figure, window2)  #create new canvas above Tkinter window
+        chart.draw()    #draw the chart
+        chart.get_tk_widget().place(x=5,y=5)    #place chart in Tkinter widget
+        dat_frame.plot(x="Number", y="Frequency",kind='bar', legend=True, ax=ax) #plot the data to bar chart with legend and info
+        ax.set_title("Frequency distribution among generated random number")    #set plot title
     elif(str(varCheck1.get()) == "2"):
         figure, ax = plt.subplots(figsize=(6,6), dpi=110)
-        sns.heatmap(dat_frame, cmap='YlGnBu', annot=True)
+        sns.heatmap(dat_frame, cmap='YlGnBu', annot=True)   #make new seaborn heatmap using Yelllow, Green, and Blue color map
         chart = FigureCanvasTkAgg(figure, window2)
         chart.draw()
         chart.get_tk_widget().place(x=5,y=5)
@@ -53,44 +54,44 @@ def get_autogen_stat(event=None):
         chart = FigureCanvasTkAgg(figure, window2)
         chart.draw()
         chart.get_tk_widget().place(x=5,y=5)
-        dat_frame.plot(x="Number", y="Frequency",kind='scatter', legend=True, ax=ax, cmap='YlGnBu')
+        dat_frame.plot(x="Number", y="Frequency",kind='scatter', legend=True, ax=ax, cmap='YlGnBu') #plot the data to scatter chart with legend and info
         ax.set_title("Frequency distribution among generated random number")
         
 
 def exports(event=None):
     date = str(datetime.datetime.now()) #get datetime and convert to string
     txt_data = txt_view.get("1.0", END)    #get the data on text_view
-    if txt_data == "\n":
-        messagebox.showerror(title="ERROR", message="You need generate number first !")
+    if txt_data == "\n":    #check if text box are enter (default value)
+        messagebox.showerror(title="ERROR", message="You need generate number first !") #GUI error msg
     else:
         msg_info='''File succesfully opened !!'''   #msg string
         msg_created='''File succesfully created !!'''
-        if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
-            f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
+        if(not path.exists(get_path+'/shor.flog')):  #check if the file is exist
+            f=open(get_path+'/shor.flog', "xt")  #open the file if the file not exist, create it
             if not f.closed:    #check if the file is still open
                 messagebox.showinfo("Info", message=msg_created)    #show messagebox
                 f.write(date+"\n"+txt_data) #write the date and text_view
             f.close()   #close file
-            webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')   #auto open the file text using default/prefered text editor
-        elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
-            f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
+            webbrowser.open(get_path+'/shor.flog')   #auto open the file text using default/prefered text editor
+        elif(path.exists(get_path+'/shor.flog')):
+            f=open(get_path+'/shor.flog', "at")
             if not f.closed:
                 messagebox.showinfo("Info", message=msg_info)
                 f.write(date+"\n"+txt_data)
             f.close()
-            webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
+            webbrowser.open(get_path+'/shor.flog')
     
 
 def auto_gen(event=None):
-    f=open(get_path+'/Quantum_Random_Number_Output.txt', "r+")
-    f.truncate(0)
-    f.seek(0)
-    n=int(spin_n.get())
-    shot=int(spin_shots.get())
-    q=int(spin_qubit.get())
-    backend = option_var.get()
-    iteration=int(spin_autogen.get())
-    rslt_list = []
+    f=open(get_path+'/shor.flog', "r+")  #open the file using read mode with pointer set to beginning of file
+    f.truncate(0)   #Clear the file content
+    f.seek(0)   #set pointer to beginning of file
+    n=int(spin_n.get()) #get number of loop
+    shot=int(spin_shots.get())  #get number of shot
+    q=int(spin_qubit.get()) #get number of qubit
+    backend = option_var.get()  #get the backend
+    iteration=int(spin_autogen.get())   #get number of iteration
+    rslt_list = []  
     freq = {}
     for j in range (0, iteration):
         circ = QuantumCircuit(q,q)  #init quantum circuit
@@ -149,17 +150,17 @@ def auto_gen(event=None):
             txt_view.config(state=DISABLED)
         date = str(datetime.datetime.now()) #get datetime and convert to string
         txt_data = txt_view.get("1.0", END)    #get the data on text_view
-        if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
-                f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
+        if(not path.exists(get_path+'/shor.flog')):  #check if the file is exist
+                f=open(get_path+'/shor.flog', "xt")  #open the file if the file not exist, create it
                 if not f.closed:    #check if the file is still open
                     f.write(date+"\n"+txt_data) #write the date and text_view
                 f.close()   #close file
-        elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
-            f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
+        elif(path.exists(get_path+'/shor.flog')):
+            f=open(get_path+'/shor.flog', "at")
         if not f.closed:
             f.write(date+"\n"+txt_data)
         f.close()
-    webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
+    webbrowser.open(get_path+'/shor.flog')
     for numbers in rslt_list:
         if numbers in freq:
             freq[numbers] += 1
@@ -205,6 +206,7 @@ def clear(event=None):
     txt_view.config(state=NORMAL)   #set textbox become NORMAL state
     txt_view.delete(1.0,END)    #delete all text in textbox
     txt_view.config(state=DISABLED) #set textbox become DISABLE state(disable textbox !CANNOT EDIT THE TEXTBOX PROGRAMMATICALLY NOR MANUAL! readonly)
+    #set all var to assigned value
     n_var.set("2")
     shots_var.set("1024")
     qubit_var.set("2")
@@ -291,6 +293,7 @@ def select_all(event=None):
     var.set(4)
 
 def factorize(event=None):
+    #init window and config
     window3 = Toplevel(window)
     window3.title("Factorize")
     window3.geometry("350x50")
@@ -311,11 +314,23 @@ def factorize(event=None):
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
     backend = Aer.get_backend(option_var.get())
+    #init quantum instance and Shor's algorithm
     quantum_instance = QuantumInstance(backend, shots=shot)
     shor = Shor(quantum_instance=quantum_instance)
     rslt = shor.factor(result)
     final_rslt = rslt.factors[0]
     lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt))
+    date = str(datetime.datetime.now())
+    if(not path.exists(get_path+'/shor.flog')):  #check if the file is exist
+        f=open(get_path+'/shor.flog', "xt")  #open the file if the file not exist, create it
+        if not f.closed:    #check if the file is still open
+            f.write(date+"\n"+str(rslt)) #write the date and text_view
+        f.close()   #close file
+    elif(path.exists(get_path+'/shor.flog')):
+        f=open(get_path+'/shor.flog', "at")
+    if not f.closed:
+        f.write(date+"\n"+str(rslt))
+    f.close()
 
 #main  program
 #get the path for file
