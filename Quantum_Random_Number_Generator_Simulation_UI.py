@@ -329,20 +329,22 @@ def factorize(event=None):
         messagebox.showerror("Error","You need generate a number before use this tools")
     shot = int(spin_shots.get())
     backend = option_var.get()
-    if(search("gpu", backend)):
+    if(search("gpu", backend)): #serach if backend string contain "_gpu"
         try:
-            sim = Aer.get_backend(backend.replace('_gpu',''))
-            sim.set_options(device='GPU')
-        except AerError:
-            pass
+            sim = Aer.get_backend(backend.replace('_gpu',''))   #set the backend without "_gpu" because qiskit doesn't have that backend name
+            sim.set_options(device='GPU')   #set simulator option to run using Nvidia GPU
+            window3.focus_force()   #re-focus windows
+        except AerError as e:   #Get error from Aer simulator
+            messagebox.showerror("Error","Your device doesn't have Nvidia GPU or CUDA installed \nplease check again if your CUDA is installed correctly\n"+e)  #warn user if their device doesn't have GPU or CUDA
+            pass    #just do other code, don't stop
     else:
         sim = Aer.get_backend(backend) #get qiskit simulator
     #init quantum instance and Shor's algorithm
-    quantum_instance = QuantumInstance(sim, shots=shot)
-    shor = Shor(quantum_instance=quantum_instance)
-    rslt = shor.factor(result)
-    final_rslt = rslt.factors[0]
-    lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt))
+    quantum_instance = QuantumInstance(sim, shots=shot) #create a QuantumInstance
+    shor = Shor(quantum_instance=quantum_instance)  #Create Shor circuit using previous QuantumInstance
+    rslt = shor.factor(result)  #get the result factor
+    final_rslt = rslt.factors[0]    #get the first list of the result
+    lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt))   #set the result to existing label
     date = str(datetime.datetime.now())
     if(not path.exists(get_path+'/shor.flog')):  #check if the file is exist
         f=open(get_path+'/shor.flog', "xt")  #open the file if the file not exist, create it
