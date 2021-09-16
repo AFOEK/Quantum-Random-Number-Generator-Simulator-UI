@@ -175,6 +175,10 @@ def auto_gen(event=None):
         else:
             freq[numbers] =1
     auto_gen.df = pd.DataFrame(list(freq.items()), columns=['Number', 'Frequency'])
+    circ.draw(output="mpl", filename="circuit_output\\qrng_circuit.png")
+    circ.draw(output="latex", filename="circuit_output\\qrng_circuit_latex.png")
+    circ.draw(output="latex_source", filename="circuit_output\\qrng_circuit_tex.tex")
+    circ.draw(output="text", filename="circuit_output\\qrng_circuit_tex.txt")
 
 def help(event=None):
     msg = '''Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
@@ -285,6 +289,10 @@ def generate(event=None):
         txt_view.delete(1.0,END)
         txt_view.insert(INSERT, str(generate.digit) +"\n" + str(generate.rslt) +"\n"+ str(generate.bit_string))
         txt_view.config(state=DISABLED)
+    circ.draw(output="mpl", filename="circuit_output\\qrng_circuit.png")
+    circ.draw(output="latex", filename="circuit_output\\qrng_circuit_latex.png")
+    circ.draw(output="latex_source", filename="circuit_output\\qrng_circuit_tex.tex")
+    circ.draw(output="text", filename="circuit_output\\qrng_circuit_tex.txt")
 
 def select_bar(event=None):
     varCheck1.set(1)
@@ -356,6 +364,10 @@ def factorize(event=None):
     if not f.closed:
         f.write(date+"\n"+str(rslt))
     f.close()
+    shor.construct_circuit(rslt).draw(output="mpl", filename="circuit_output\\shor_circuit.png")
+    shor.construct_circuit(rslt).draw(output="latex", filename="circuit_output\\shor_circuit.png")
+    shor.construct_circuit(rslt).draw(output="latex_source", filename="circuit_output\\shor_circuit.tex")
+    shor.construct_circuit(rslt).draw(output="text", filename="circuit_output\\shor_circuit.txt")
 
 #main  program
 #get the path for file
