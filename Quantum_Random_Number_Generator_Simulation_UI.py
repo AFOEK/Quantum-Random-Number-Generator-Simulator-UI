@@ -343,7 +343,7 @@ def factorize(event=None):
             sim.set_options(device='GPU')   #set simulator option to run using Nvidia GPU
             window3.focus_force()   #re-focus windows
         except AerError as e:   #Get error from Aer simulator
-            messagebox.showerror("Error","Your device doesn't have Nvidia GPU or CUDA installed \nplease check again if your CUDA is installed correctly\n"+e)  #warn user if their device doesn't have GPU or CUDA
+            messagebox.showerror("Error","Your device doesn't have Nvidia GPU or CUDA installed \nplease check again if your CUDA is installed correctly\n")  #warn user if their device doesn't have GPU or CUDA
             pass    #just do other code, don't stop
     else:
         sim = Aer.get_backend(backend) #get qiskit simulator
@@ -357,17 +357,17 @@ def factorize(event=None):
     if(not path.exists(get_path+'/shor.flog')):  #check if the file is exist
         f=open(get_path+'/shor.flog', "xt")  #open the file if the file not exist, create it
         if not f.closed:    #check if the file is still open
-            f.write(date+"\n"+str(rslt)) #write the date and text_view
+            f.write(date+"\n"+str(rslt)+"\n"+result) #write the date and text_view
         f.close()   #close file
     elif(path.exists(get_path+'/shor.flog')):
         f=open(get_path+'/shor.flog', "at")
     if not f.closed:
         f.write(date+"\n"+str(rslt))
     f.close()
-    shor.construct_circuit(rslt).draw(output="mpl", filename="circuit_output\\shor_circuit.png")
-    shor.construct_circuit(rslt).draw(output="latex", filename="circuit_output\\shor_circuit.png")
-    shor.construct_circuit(rslt).draw(output="latex_source", filename="circuit_output\\shor_circuit.tex")
-    shor.construct_circuit(rslt).draw(output="text", filename="circuit_output\\shor_circuit.txt")
+    shor.construct_circuit(result).draw(output="mpl", filename="circuit_output\\shor_circuit.png")
+    shor.construct_circuit(result).draw(output="latex", filename="circuit_output\\shor_circuit.png")
+    shor.construct_circuit(result).draw(output="latex_source", filename="circuit_output\\shor_circuit.tex")
+    shor.construct_circuit(result).draw(output="text", filename="circuit_output\\shor_circuit.txt")
 
 #main  program
 #get the path for file
