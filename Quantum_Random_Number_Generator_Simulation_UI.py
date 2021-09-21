@@ -92,7 +92,7 @@ def auto_gen(event=None):
     q=int(spin_qubit.get()) #get number of qubit
     backend = option_var.get()  #get the backend
     iteration=int(spin_autogen.get())   #get number of iteration
-    rslt_list = []  
+    rslt_list = []
     freq = {}
     for j in range (0, iteration):
         circ = QuantumCircuit(q,q)  #init quantum circuit
@@ -175,14 +175,6 @@ def auto_gen(event=None):
         else:
             freq[numbers] =1
     auto_gen.df = pd.DataFrame(list(freq.items()), columns=['Number', 'Frequency'])
-    try:
-        circ.draw(output="mpl", filename="circuit_output/qrng_circuit.png")
-        circ.draw(output="latex", filename="circuit_output/qrng_circuit_latex.png")
-        circ.draw(output="latex_source", filename="circuit_output/qrng_circuit_tex.tex")
-        circ.draw(output="text", filename="circuit_output/qrng_circuit_tex.txt")
-    except:
-        messagebox.showerror("Error","Cannot write circuit diagram !")
-        pass
 
 def help(event=None):
     msg = '''Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
@@ -365,21 +357,22 @@ def factorize(event=None):
     if(not path.exists(get_path+'/Shor.flog')):  #check if the file is exist
         f=open(get_path+'/Shor.flog', "xt")  #open the file if the file not exist, create it
         if not f.closed:    #check if the file is still open
-            f.write(date+" "+str(rslt)+" "+result) #write the date and text_view
+            f.write(date+" "+str(rslt)+" "+str(result)) #write the date and text_view
         f.close()   #close file
+        webbrowser.open(get_path+'/Shor.flog')
     elif(path.exists(get_path+'/Shor.flog')):
         f=open(get_path+'/Shor.flog', "at")
     if not f.closed:
-        f.write(date+" "+str(rslt)+" "+result)
+        f.write(date+" "+str(rslt)+" "+str(result))
     f.close()
+    webbrowser.open(get_path+'/Shor.flog')
     try:
-        circ.draw(output="mpl", filename="circuit_output/qrng_circuit.png")
-        circ.draw(output="latex", filename="circuit_output/qrng_circuit_latex.png")
-        circ.draw(output="latex_source", filename="circuit_output/qrng_circuit_tex.tex")
-        circ.draw(output="text", filename="circuit_output/qrng_circuit_tex.txt")
+        shor.construct_circuit(result).draw(output="mpl", filename="circuit_output/Shor_circuit.png")
+        shor.construct_circuit(result).draw(output="latex", filename="circuit_output/Shor_circuit_latex.png")
+        shor.construct_circuit(result).draw(output="latex_source", filename="circuit_output/Shor_circuit_tex.tex")
+        shor.construct_circuit(result).draw(output="text", filename="circuit_output/Shor_circuit_tex.txt")
     except:
-        messagebox.showerror("Error","Cannot write circuit diagram !")
-        pass
+        messagebox.showerror("Error","Failed to draw circuit !")
 
 #main  program
 #get the path for file
