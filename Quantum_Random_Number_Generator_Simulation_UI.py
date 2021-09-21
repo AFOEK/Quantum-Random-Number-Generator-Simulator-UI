@@ -18,7 +18,7 @@ import numpy as py
 from math import gcd
 from qiskit.providers.aer import AerError
 
-__version__ = "0.2.3rc4"
+__version__ = "0.2.6rc3"
 
 def get_autogen_stat(event=None):
     window2 = Toplevel(window)
