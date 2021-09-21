@@ -67,24 +67,24 @@ def exports(event=None):
     else:
         msg_info='''File succesfully opened !!'''   #msg string
         msg_created='''File succesfully created !!'''
-        if(not path.exists(get_path+'/shor.flog')):  #check if the file is exist
-            f=open(get_path+'/shor.flog', "xt")  #open the file if the file not exist, create it
+        if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
+            f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
             if not f.closed:    #check if the file is still open
                 messagebox.showinfo("Info", message=msg_created)    #show messagebox
                 f.write(date+"\n"+txt_data) #write the date and text_view
             f.close()   #close file
-            webbrowser.open(get_path+'/shor.flog')   #auto open the file text using default/prefered text editor
-        elif(path.exists(get_path+'/shor.flog')):
-            f=open(get_path+'/shor.flog', "at")
+            webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')   #auto open the file text using default/prefered text editor
+        elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
+            f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
             if not f.closed:
                 messagebox.showinfo("Info", message=msg_info)
                 f.write(date+"\n"+txt_data)
             f.close()
-            webbrowser.open(get_path+'/shor.flog')
+            webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
     
 
 def auto_gen(event=None):
-    f=open(get_path+'/shor.flog', "r+")  #open the file using read mode with pointer set to beginning of file
+    f=open(get_path+'/Quantum_Random_Number_Output.txt', "r+")  #open the file using read mode with pointer set to beginning of file
     f.truncate(0)   #Clear the file content
     f.seek(0)   #set pointer to beginning of file
     n=int(spin_n.get()) #get number of loop
@@ -158,27 +158,31 @@ def auto_gen(event=None):
             txt_view.config(state=DISABLED)
         date = str(datetime.datetime.now()) #get datetime and convert to string
         txt_data = txt_view.get("1.0", END)    #get the data on text_view
-        if(not path.exists(get_path+'/shor.flog')):  #check if the file is exist
-                f=open(get_path+'/shor.flog', "xt")  #open the file if the file not exist, create it
+        if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
+                f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
                 if not f.closed:    #check if the file is still open
                     f.write(date+"\n"+txt_data) #write the date and text_view
                 f.close()   #close file
-        elif(path.exists(get_path+'/shor.flog')):
-            f=open(get_path+'/shor.flog', "at")
+        elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
+            f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
         if not f.closed:
             f.write(date+"\n"+txt_data)
         f.close()
-    webbrowser.open(get_path+'/shor.flog')
+    webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
     for numbers in rslt_list:
         if numbers in freq:
             freq[numbers] += 1
         else:
             freq[numbers] =1
     auto_gen.df = pd.DataFrame(list(freq.items()), columns=['Number', 'Frequency'])
-    circ.draw(output="mpl", filename="circuit_output/qrng_circuit.png")
-    circ.draw(output="latex", filename="circuit_output/qrng_circuit_latex.png")
-    circ.draw(output="latex_source", filename="circuit_output/qrng_circuit_tex.tex")
-    circ.draw(output="text", filename="circuit_output/qrng_circuit_tex.txt")
+    try:
+        circ.draw(output="mpl", filename="circuit_output/qrng_circuit.png")
+        circ.draw(output="latex", filename="circuit_output/qrng_circuit_latex.png")
+        circ.draw(output="latex_source", filename="circuit_output/qrng_circuit_tex.tex")
+        circ.draw(output="text", filename="circuit_output/qrng_circuit_tex.txt")
+    except:
+        messagebox.showerror("Error","Cannot write circuit diagram !")
+        pass
 
 def help(event=None):
     msg = '''Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
@@ -289,10 +293,14 @@ def generate(event=None):
         txt_view.delete(1.0,END)
         txt_view.insert(INSERT, str(generate.digit) +"\n" + str(generate.rslt) +"\n"+ str(generate.bit_string))
         txt_view.config(state=DISABLED)
-    circ.draw(output="mpl", filename="circuit_output/qrng_circuit.png")
-    circ.draw(output="latex", filename="circuit_output/qrng_circuit_latex.png")
-    circ.draw(output="latex_source", filename="circuit_output/qrng_circuit_tex.tex")
-    circ.draw(output="text", filename="circuit_output/qrng_circuit_tex.txt")
+    try:
+        circ.draw(output="mpl", filename="circuit_output/qrng_circuit.png")
+        circ.draw(output="latex", filename="circuit_output/qrng_circuit_latex.png")
+        circ.draw(output="latex_source", filename="circuit_output/qrng_circuit_tex.tex")
+        circ.draw(output="text", filename="circuit_output/qrng_circuit_tex.txt")
+    except:
+        messagebox.showerror("Error","Cannot write circuit diagram !")
+        pass
 
 def select_bar(event=None):
     varCheck1.set(1)
@@ -354,20 +362,24 @@ def factorize(event=None):
     final_rslt = rslt.factors[0]    #get the first list of the result
     lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt))   #set the result to existing label
     date = str(datetime.datetime.now())
-    if(not path.exists(get_path+'/shor.flog')):  #check if the file is exist
-        f=open(get_path+'/shor.flog', "xt")  #open the file if the file not exist, create it
+    if(not path.exists(get_path+'/Shor.flog')):  #check if the file is exist
+        f=open(get_path+'/Shor.flog', "xt")  #open the file if the file not exist, create it
         if not f.closed:    #check if the file is still open
-            f.write(date+"\n"+str(rslt)+"\n"+result) #write the date and text_view
+            f.write(date+" "+str(rslt)+" "+result) #write the date and text_view
         f.close()   #close file
-    elif(path.exists(get_path+'/shor.flog')):
-        f=open(get_path+'/shor.flog', "at")
+    elif(path.exists(get_path+'/Shor.flog')):
+        f=open(get_path+'/Shor.flog', "at")
     if not f.closed:
-        f.write(date+"\n"+str(rslt))
+        f.write(date+" "+str(rslt)+" "+result)
     f.close()
-    shor.construct_circuit(result).draw(output="mpl", filename="circuit_output/shor_circuit.png")
-    shor.construct_circuit(result).draw(output="latex", filename="circuit_output/shor_circuit.png")
-    shor.construct_circuit(result).draw(output="latex_source", filename="circuit_output/shor_circuit.tex")
-    shor.construct_circuit(result).draw(output="text", filename="circuit_output/shor_circuit.txt")
+    try:
+        circ.draw(output="mpl", filename="circuit_output/qrng_circuit.png")
+        circ.draw(output="latex", filename="circuit_output/qrng_circuit_latex.png")
+        circ.draw(output="latex_source", filename="circuit_output/qrng_circuit_tex.tex")
+        circ.draw(output="text", filename="circuit_output/qrng_circuit_tex.txt")
+    except:
+        messagebox.showerror("Error","Cannot write circuit diagram !")
+        pass
 
 #main  program
 #get the path for file
