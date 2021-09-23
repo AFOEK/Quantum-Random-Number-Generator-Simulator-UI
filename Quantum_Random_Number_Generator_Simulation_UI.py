@@ -203,7 +203,9 @@ def help(event=None):
     \t11. Ctrl+d → Select Digit
     \t12. Crtl+Shift+A → Select All Information
     \t13. F1 → Reopen this window
+    \t14. Ctrl+f → Factorize using Shor's algorithm
     \nFor recommended settings click clear button !
+    \nAll circuit will generated on circuit_output
     \nAuthor: Felix 'AFÖÉK' Montalfu Ⓚ 2021, All Right Reserved
     \nGithub link: https://github.com/AFOEK/Quantum-Random-Number-Generator-Simulator-UI
     '''
