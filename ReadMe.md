@@ -32,7 +32,7 @@ Future feature:
 - [x] Make a clone for web app and deploy
 - [x] Add documentation and sample
 - [x] Add Shor's algorithm for factorization
-- [x] Add GPU option to run quantum circuit(Nvidia GPU)
+- [x] Add GPU option to run quantum circuit (Nvidia GPU)
 - [ ] Adding Option for factorization using _General Number Field Sieve_ (GNFS)
 - [ ] Able to run on real quantum device
 - [ ] Able to convert little endian ↔ big endian

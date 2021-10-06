@@ -1,4 +1,5 @@
 import os
+import time
 import datetime
 import webbrowser
 import pandas as pd
@@ -14,6 +15,7 @@ from qiskit.algorithms import Shor
 from qiskit.utils import QuantumInstance
 from re import search
 from numpy import *
+from tkhtmlview import HTMLLabel
 import numpy as py
 from math import gcd
 from qiskit.providers.aer import AerError
@@ -94,6 +96,7 @@ def auto_gen(event=None):
     iteration=int(spin_autogen.get())   #get number of iteration
     rslt_list = []
     freq = {}
+    start_time = time.perf_counter_ns()
     for j in range (0, iteration):
         circ = QuantumCircuit(q,q)  #init quantum circuit
         if(q==1):
@@ -135,26 +138,40 @@ def auto_gen(event=None):
         bit_string = "".join(strings)   #convert list string become bitstring
         rslt = int(bit_string,2)    #convert all bitstring become integer
         digit = str(len(str(rslt))) #count lenght of result
+        hex_digit = hex(rslt)
+        oct_digit = oct(rslt)
         rslt_list.append(rslt)
+        stop_time = time.perf_counter_ns()
+        final_time = stop_time - start_time
         if(str(var.get()) == "1"):  #get value of radio button
             txt_view.config(state=NORMAL)   #enable textbox
             txt_view.delete(1.0,END)    #clear all entry
-            txt_view.insert(INSERT, str(rslt))  #insert the result
+            txt_view.insert(INSERT, str(rslt) + "\n" + "Time to execute circuit until result obtained: " + str(final_time))  #insert the result
             txt_view.config(state=DISABLED) #disable or readonly mode
         elif(str(var.get()) == "2"):
             txt_view.config(state=NORMAL)
             txt_view.delete(1.0,END)
-            txt_view.insert(INSERT, bit_string)
+            txt_view.insert(INSERT, bit_string + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
             txt_view.config(state=DISABLED)
         elif(str(var.get()) == "3"):
             txt_view.config(state=NORMAL)
             txt_view.delete(1.0,END)
-            txt_view.insert(INSERT, str(digit))
+            txt_view.insert(INSERT, str(digit) + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
             txt_view.config(state=DISABLED)
         elif(str(var.get()) == "4"):
             txt_view.config(state=NORMAL)
             txt_view.delete(1.0,END)
-            txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string))
+            txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string) + "\n" + hex_digit+ "\n" + oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
+            txt_view.config(state=DISABLED)
+        elif(str(var.get()) == "5"):
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, generate.hex_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
+            txt_view.config(state=DISABLED)
+        elif(str(var.get()) == "6"):
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, generate.oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
             txt_view.config(state=DISABLED)
         date = str(datetime.datetime.now()) #get datetime and convert to string
         txt_data = txt_view.get("1.0", END)    #get the data on text_view
@@ -177,18 +194,19 @@ def auto_gen(event=None):
     auto_gen.df = pd.DataFrame(list(freq.items()), columns=['Number', 'Frequency'])
 
 def help(event=None):
-    msg = '''Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
-    \nShots → It's make your generated random number more accurate and more diverse
-    \nQubit Count → It's for how many bit string generated which will be safe into array list
-    \nGenerate result → It'll generate an integer number
-    \nGenerate binary → It'll generate a binary form
-    \nGenerate digit → It'll count how many digit from an integer
-    \nClear → It'll clear all data from textbox
-    \nGenerate all information → It'll generate all information such as integer, digit, and binary form
-    \nExport → It'll export output from text box to an file
-    \nAuto generate → It'll generate output and export it into a file
-    \nAuto generate statistic → It'll create visualization using bar, heatmap, or line graph
-    \nBackend → It'll use backend what you choose
+    msg = '''
+    Iteration → It's for generate how many digits and it's depends how many qubits you give with formula: 2^n with n (how many qubit allocated)
+    Shots → It's make your generated random number more accurate and more diverse
+    Qubit Count → It's for how many bit string generated which will be safe into array list
+    Generate result → It'll generate an integer number
+    Generate binary → It'll generate a binary form
+    Generate digit → It'll count how many digit from an integer
+    Clear → It'll clear all data from textbox
+    Generate all information → It'll generate all information such as integer, digit, and binary form
+    Export → It'll export output from text box to an file
+    Auto generate → It'll generate output and export it into a file
+    Auto generate statistic → It'll create visualization using bar, heatmap, or line graph
+    Backend → It'll use backend what you choose
     \nKeyboard Shortcut:
     \t1. Ctrl+g → Generate number
     \t2. Ctrl+c → Clear output from text box
@@ -203,14 +221,17 @@ def help(event=None):
     \t11. Ctrl+d → Select Digit
     \t12. Crtl+Shift+A → Select All Information
     \t13. F1 → Reopen this window
-    \t14. Ctrl+f → Factorize using Shor's algorithm
-    \nFor recommended settings click clear button !
-    \nAll circuit will generated on circuit_output
-    \nAuthor: Felix 'AFÖÉK' Montalfu Ⓚ 2021, All Right Reserved
-    \nGithub link: https://github.com/AFOEK/Quantum-Random-Number-Generator-Simulator-UI
+    \t14. Ctrl+f → Factorize using Shor's algorithm\n
+    For recommended settings click clear button !
+    All circuit will generated on circuit_output
+    Author: Felix 'AFÖÉK' Montalfu Ⓚ 2021, All Right Reserved
+    Github: 
     '''
-    messagebox.showinfo("Help", message=msg)    #show the messagebox
-    window.option_clear()   #clear font message
+    top = Toplevel()
+    top.title("Help")
+    Message(top, font=10, text=msg, padx=10, pady=10).pack()
+    HTMLLabel(top, html='<a href="https://github.com/AFOEK/Quantum-Random-Number-Generator-Simulator-UI">https://github.com/AFOEK/Quantum-Random-Number-Generator-Simulator-UI</a>', width=84, height=2).place(x=75,y=605)
+    top.after(5500, top.destroy)
 
 def clear(event=None):
     txt_view.config(state=NORMAL)   #set textbox become NORMAL state
@@ -227,6 +248,7 @@ def generate(event=None):
     shot = int(spin_shots.get())
     q = int(spin_qubit.get())
     backend = option_var.get()
+    start_time = time.perf_counter_ns()
     circ = QuantumCircuit(q,q)  #init quantum circuit
     if(q==1):
         for i in range(0,q):
@@ -266,26 +288,40 @@ def generate(event=None):
     strings = [str(number) for number in number]    #convert all number in list become a list string
     generate.bit_string = "".join(strings)   #convert list string become bitstring
     generate.rslt = int(generate.bit_string,2)    #convert all bitstring become integer
+    generate.hex_digit = hex(generate.rslt)
+    generate.oct_digit = oct(generate.rslt)
     generate.digit = str(len(str(generate.rslt))) #count lenght of result
+    stop_time = time.perf_counter_ns()
+    final_time = stop_time - start_time
     if(str(var.get()) == "1"):  #get value of radio button
         txt_view.config(state=NORMAL)   #enable textbox
         txt_view.delete(1.0,END)    #clear all entry
-        txt_view.insert(INSERT, str(generate.rslt))  #insert the result
+        txt_view.insert(INSERT, str(generate.rslt) + "\n" + "Time to execute circuit until result obtained: " + str(final_time))  #insert the result
         txt_view.config(state=DISABLED) #disable or readonly mode
     elif(str(var.get()) == "2"):
         txt_view.config(state=NORMAL)
         txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, generate.bit_string)
+        txt_view.insert(INSERT, generate.bit_string + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
         txt_view.config(state=DISABLED)
     elif(str(var.get()) == "3"):
         txt_view.config(state=NORMAL)
         txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, str(generate.digit))
+        txt_view.insert(INSERT, str(generate.digit) + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
         txt_view.config(state=DISABLED)
     elif(str(var.get()) == "4"):
         txt_view.config(state=NORMAL)
         txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, str(generate.digit) +"\n" + str(generate.rslt) +"\n"+ str(generate.bit_string))
+        txt_view.insert(INSERT, str(generate.digit) +"\n" + str(generate.rslt) +"\n"+ str(generate.bit_string) + "\n" + generate.hex_digit + "\n" + generate.oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
+        txt_view.config(state=DISABLED)
+    elif(str(var.get()) == "5"):
+        txt_view.config(state=NORMAL)
+        txt_view.delete(1.0,END)
+        txt_view.insert(INSERT, generate.hex_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
+        txt_view.config(state=DISABLED)
+    elif(str(var.get()) == "6"):
+        txt_view.config(state=NORMAL)
+        txt_view.delete(1.0,END)
+        txt_view.insert(INSERT, generate.oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
         txt_view.config(state=DISABLED)
     try:
         circ.draw(output="mpl", filename="circuit_output/qrng_circuit.png")
@@ -321,7 +357,7 @@ def factorize(event=None):
     #init window and config
     window3 = Toplevel(window)
     window3.title("Factorize")
-    window3.geometry("350x50")
+    window3.geometry("450x50")
     window3.configure(bg="white")
     window3.focus_force()
     photo3 = PhotoImage(file = get_path+'/quantum.png')
@@ -349,12 +385,15 @@ def factorize(event=None):
             pass    #just do other code, don't stop
     else:
         sim = Aer.get_backend(backend) #get qiskit simulator
+    start_time = time.perf_counter_ns()
     #init quantum instance and Shor's algorithm
     quantum_instance = QuantumInstance(sim, shots=shot) #create a QuantumInstance
     shor = Shor(quantum_instance=quantum_instance)  #Create Shor circuit using previous QuantumInstance
     rslt = shor.factor(result)  #get the result factor
     final_rslt = rslt.factors[0]    #get the first list of the result
-    lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt))   #set the result to existing label
+    stop_time = time.perf_counter_ns()
+    final_time = stop_time - start_time
+    lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt) + " with total execution time " + str(final_time))   #set the result to existing label
     date = str(datetime.datetime.now())
     if(not path.exists(get_path+'/Shor.flog')):  #check if the file is exist
         f=open(get_path+'/Shor.flog', "xt")  #open the file if the file not exist, create it
@@ -433,7 +472,7 @@ btn_export = Button(window, font=14, text="Export !", padx=10, cursor="hand2", c
 btn_auto = Button(window, font=5, text="Auto Generate !", padx=5, cursor="hand2", command=auto_gen, underline=0,bg="white")
 btn_generate = Button(window, font=14, text="Generate !", padx=10, command=generate, cursor="hand2", underline=0, repeatdelay=200, repeatinterval=90,bg="white")
 btn_stat = Button(window, font=14, text="Auto Generator Statistics", padx=10, cursor="hand2", command=get_autogen_stat, underline=15,bg="white")
-btn_shors = Button(window, font=14, text="Factorize", padx=5, command=factorize, cursor="hand2", underline=0,bg="white")
+btn_shors = Button(window, font=12, text="Factorize", padx=5, command=factorize, cursor="hand2", underline=0,bg="white")
 #Text init
 txt_view = Text(window, font=14, width=94, wrap=CHAR, xscrollcommand=set(), bg="white")
 #Drop menu init
@@ -446,6 +485,8 @@ radio_result = Radiobutton(window, font=14, text="Generate result", value=1, var
 radio_binary = Radiobutton(window, font=14, text="Generate binary form", value=2, variable = var, underline=9, bg="white")
 radio_digit = Radiobutton(window, font=14, text="Generate digit", value=3, variable = var, underline=9, bg="white")
 radio_all = Radiobutton(window, font=14, text="Generate all information", value=4, variable = var, underline=9, bg="white")
+radio_hex = Radiobutton(window, font=14, text="Generate Hexadecimal form", value = 5, variable = var, underline=9, bg="white")
+radio_oct = Radiobutton(window, font=14, text="Generate Octal form", value = 6, variable = var, underline=9, bg="white")
 radio_br = Radiobutton(window, font=14, text="Bar", variable=varCheck1, underline = 0, value = 1, bg="white")
 radio_hm = Radiobutton(window, font=14, text="Heat Map", variable=varCheck1, underline = 0, value = 2, bg="white")
 radio_sc = Radiobutton(window, font=14, text="Scatter Map", variable=varCheck1, underline = 0, value = 3, bg="white")
@@ -455,22 +496,24 @@ spin_n.place(x=70, y=6)
 lbl_shots.place(x=0, y=36)
 spin_shots.place(x=70, y=38)
 btn_generate.place(x=155, y=33)
-btn_clear.place(x=270, y=33)
+btn_clear.place(x=267, y=33)
 btn_export.place(x=350, y=33)
 lbl_qubit.place(x=150, y=5)
 spin_qubit.place(x=245, y=6)
 radio_result.place(x=0, y=70)
 radio_binary.place(x=0, y=93)
-radio_digit.place(x=215, y=70)
-radio_all.place(x=215, y=93)
+radio_digit.place(x=185, y=70)
+radio_all.place(x=185, y=93)
+radio_hex.place(x=385, y=70)
+radio_oct.place(x=385, y=93)
 lbl_autogen.place(x=325, y=5)
 spin_autogen.place(x=445, y=6)
 txt_view.place(x=0, y=125)
 btn_auto.place(x=440, y=33)
-btn_stat.place(x=465, y=70)
-radio_br.place(x=698, y=35)
-radio_hm.place(x=698, y=57)
-radio_sc.place(x=698, y=79)
+btn_stat.place(x=578, y=33)
+radio_br.place(x=790, y=35)
+radio_hm.place(x=790, y=57)
+radio_sc.place(x=790, y=79)
 lbl_backend.place(x=534, y=5)
 drop_menu.place(x=614, y=3)
 btn_shors.place(x=745, y=3)
