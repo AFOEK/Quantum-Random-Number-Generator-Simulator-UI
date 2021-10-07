@@ -328,6 +328,10 @@ def generate(event=None):
         circ.draw(output="latex", filename="circuit_output/qrng_circuit_latex.png")
         circ.draw(output="latex_source", filename="circuit_output/qrng_circuit_tex.tex")
         circ.draw(output="text", filename="circuit_output/qrng_circuit_tex.txt")
+        circ.decompose().draw(output="mpl", filename="circuit_output/qrng_circuit_decomposed.png")
+        circ.decompose().draw(output="latex", filename="circuit_output/qrng_circuit_latex_decomposed.png")
+        circ.decompose().draw(output="latex_source", filename="circuit_output/qrng_circuit_tex_decomposed.tex")
+        circ.decompose().draw(output="text", filename="circuit_output/qrng_circuit_tex_decomposed.txt")
     except:
         messagebox.showerror("Error","Cannot write circuit diagram !")
         pass
@@ -398,13 +402,13 @@ def factorize(event=None):
     if(not path.exists(get_path+'/Shor.flog')):  #check if the file is exist
         f=open(get_path+'/Shor.flog', "xt")  #open the file if the file not exist, create it
         if not f.closed:    #check if the file is still open
-            f.write(date+" "+str(rslt)+" "+str(result)) #write the date and text_view
+            f.write(date+" "+str(rslt)+" "+str(result) + "\n") #write the date and text_view
         f.close()   #close file
         webbrowser.open(get_path+'/Shor.flog')
     elif(path.exists(get_path+'/Shor.flog')):
         f=open(get_path+'/Shor.flog', "at")
     if not f.closed:
-        f.write(date+" "+str(rslt)+" "+str(result))
+        f.write(date+" "+str(rslt)+" "+str(result) + "\n")
     f.close()
     webbrowser.open(get_path+'/Shor.flog')
     try:
@@ -412,6 +416,10 @@ def factorize(event=None):
         shor.construct_circuit(result).draw(output="latex", filename="circuit_output/Shor_circuit_latex.png")
         shor.construct_circuit(result).draw(output="latex_source", filename="circuit_output/Shor_circuit_tex.tex")
         shor.construct_circuit(result).draw(output="text", filename="circuit_output/Shor_circuit_tex.txt")
+        shor.construct_circuit(result).decompose().draw(output="mpl", filename="circuit_output/Shor_circuit_decomposed.png")
+        shor.construct_circuit(result).decompose().draw(output="latex", filename="circuit_output/Shor_circuit_latex_decomposed.png")
+        shor.construct_circuit(result).decompose().draw(output="latex_source", filename="circuit_output/Shor_circuit_tex_decomposed.tex")
+        shor.construct_circuit(result).decompose().draw(output="text", filename="circuit_output/Shor_circuit_tex_decomposed.txt")
     except:
         messagebox.showerror("Error","Failed to draw circuit !")
 
