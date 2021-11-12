@@ -389,13 +389,13 @@ def factorize(event=None):
             pass    #just do other code, don't stop
     else:
         sim = Aer.get_backend(backend) #get qiskit simulator
-    start_time = time.perf_counter_ns()
+    start_time = time.perf_counter_ns() #start timer for count how long Shor's algorithm execute
     #init quantum instance and Shor's algorithm
     quantum_instance = QuantumInstance(sim, shots=shot) #create a QuantumInstance
     shor = Shor(quantum_instance=quantum_instance)  #Create Shor circuit using previous QuantumInstance
     rslt = shor.factor(result)  #get the result factor
     final_rslt = rslt.factors[0]    #get the first list of the result
-    stop_time = time.perf_counter_ns()
+    stop_time = time.perf_counter_ns()  #stop timer for count how long Shor's algorithm execute
     final_time = stop_time - start_time
     lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt) + " with total execution time " + str(final_time))   #set the result to existing label
     date = str(datetime.datetime.now())
