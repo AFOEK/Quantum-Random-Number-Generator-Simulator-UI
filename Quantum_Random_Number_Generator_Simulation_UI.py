@@ -69,26 +69,23 @@ def exports(event=None):
     else:
         msg_info='''File succesfully opened !!'''   #msg string
         msg_created='''File succesfully created !!'''
-        if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
-            f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
+        if(not path.exists(get_path+'\\Quantum_Random_Number_Output.txt')):  #check if the file is exist
+            f=open(get_path+'\\Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
             if not f.closed:    #check if the file is still open
                 messagebox.showinfo("Info", message=msg_created)    #show messagebox
                 f.write(date+"\n"+txt_data) #write the date and text_view
             f.close()   #close file
-            webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')   #auto open the file text using default/prefered text editor
-        elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
-            f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
+            webbrowser.open(get_path+'\\Quantum_Random_Number_Output.txt')   #auto open the file text using default/prefered text editor
+        else:
+            f=open(get_path+'\\Quantum_Random_Number_Output.txt', "at")
             if not f.closed:
                 messagebox.showinfo("Info", message=msg_info)
                 f.write(date+"\n"+txt_data)
             f.close()
-            webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
+            webbrowser.open(get_path+'\\Quantum_Random_Number_Output.txt')
     
 
 def auto_gen(event=None):
-    f=open(get_path+'/Quantum_Random_Number_Output.txt', "r+")  #open the file using read mode with pointer set to beginning of file
-    f.truncate(0)   #Clear the file content
-    f.seek(0)   #set pointer to beginning of file
     n=int(spin_n.get()) #get number of loop
     shot=int(spin_shots.get())  #get number of shot
     q=int(spin_qubit.get()) #get number of qubit
@@ -99,26 +96,27 @@ def auto_gen(event=None):
     start_time = time.perf_counter_ns()
     for j in range (0, iteration):
         circ = QuantumCircuit(q,q)  #init quantum circuit
-        if(q==1):
-            for i in range(0,q):
-                circ.h(i)   #add H-gate
-                circ.measure(i,i)
-        elif(q==2):
-            for i in range(0,q):
-                circ.h(i)
-                circ.measure(i,i)
-        elif(q==3):
-            for i in range(0,q):
-                circ.h(i)
-                circ.measure(i,i)
-        elif(q==4):
-            for i in range(0,q):
-                circ.h(i)
-                circ.measure(i,i)
-        elif(q==5):
-            for i in range(0,q):
-                circ.h(i)
-                circ.measure(i,i)
+        match q:
+            case 1:
+                for i in range(0,q):
+                    circ.h(i)   #add H-gate
+                    circ.measure(i,i)
+            case 2:
+                for i in range(0,q):
+                    circ.h(i)   #add H-gate
+                    circ.measure(i,i)
+            case 3:
+                for i in range(0,q):
+                    circ.h(i)   #add H-gate
+                    circ.measure(i,i)
+            case 4:
+                for i in range(0,q):
+                    circ.h(i)   #add H-gate
+                    circ.measure(i,i)
+            case 5:
+                for i in range(0,q):
+                    circ.h(i)   #add H-gate
+                    circ.measure(i,i)
         number = [] #init a list  
         for i in range(0,int(n)):   #how many iteration which effect how many digit created
             if(search("gpu", backend)):
@@ -143,49 +141,50 @@ def auto_gen(event=None):
         rslt_list.append(rslt)
         stop_time = time.perf_counter_ns()
         final_time = stop_time - start_time
-        if(str(var.get()) == "1"):  #get value of radio button
-            txt_view.config(state=NORMAL)   #enable textbox
-            txt_view.delete(1.0,END)    #clear all entry
-            txt_view.insert(INSERT, str(rslt) + "\n" + "Time to execute circuit until result obtained: " + str(final_time))  #insert the result
-            txt_view.config(state=DISABLED) #disable or readonly mode
-        elif(str(var.get()) == "2"):
-            txt_view.config(state=NORMAL)
-            txt_view.delete(1.0,END)
-            txt_view.insert(INSERT, bit_string + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-            txt_view.config(state=DISABLED)
-        elif(str(var.get()) == "3"):
-            txt_view.config(state=NORMAL)
-            txt_view.delete(1.0,END)
-            txt_view.insert(INSERT, str(digit) + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-            txt_view.config(state=DISABLED)
-        elif(str(var.get()) == "4"):
-            txt_view.config(state=NORMAL)
-            txt_view.delete(1.0,END)
-            txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string) + "\n" + hex_digit+ "\n" + oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-            txt_view.config(state=DISABLED)
-        elif(str(var.get()) == "5"):
-            txt_view.config(state=NORMAL)
-            txt_view.delete(1.0,END)
-            txt_view.insert(INSERT, generate.hex_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-            txt_view.config(state=DISABLED)
-        elif(str(var.get()) == "6"):
-            txt_view.config(state=NORMAL)
-            txt_view.delete(1.0,END)
-            txt_view.insert(INSERT, generate.oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-            txt_view.config(state=DISABLED)
+        match str(var.get()):
+            case "1":
+                txt_view.config(state=NORMAL)   #enable textbox
+                txt_view.delete(1.0,END)    #clear all entry
+                txt_view.insert(INSERT, str(rslt) + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")  #insert the result
+                txt_view.config(state=DISABLED) #disable or readonly mode
+            case "2":
+                txt_view.config(state=NORMAL)
+                txt_view.delete(1.0,END)
+                txt_view.insert(INSERT, bit_string + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+                txt_view.config(state=DISABLED)
+            case "3":
+                txt_view.config(state=NORMAL)
+                txt_view.delete(1.0,END)
+                txt_view.insert(INSERT, str(digit) + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+                txt_view.config(state=DISABLED)
+            case "4":
+                txt_view.config(state=NORMAL)
+                txt_view.delete(1.0,END)
+                txt_view.insert(INSERT, str(digit) +"\n" + str(rslt) +"\n"+ str(bit_string) + "\n" + hex_digit + "\n" + oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+                txt_view.config(state=DISABLED)
+            case "5":
+                txt_view.config(state=NORMAL)
+                txt_view.delete(1.0,END)
+                txt_view.insert(INSERT, hex_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+                txt_view.config(state=DISABLED)
+            case "6":
+                txt_view.config(state=NORMAL)
+                txt_view.delete(1.0,END)
+                txt_view.insert(INSERT, oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+                txt_view.config(state=DISABLED)
         date = str(datetime.datetime.now()) #get datetime and convert to string
         txt_data = txt_view.get("1.0", END)    #get the data on text_view
-        if(not path.exists(get_path+'/Quantum_Random_Number_Output.txt')):  #check if the file is exist
-                f=open(get_path+'/Quantum_Random_Number_Output.txt', "xt")  #open the file if the file not exist, create it
+        if(not path.exists(get_path+'\\Quantum_Random_Number_Output_Auto_Gen.txt')):  #check if the file is exist
+                f=open(get_path+'\\Quantum_Random_Number_Output_Auto_Gen.txt', "xt")  #open the file if the file not exist, create it
                 if not f.closed:    #check if the file is still open
                     f.write(date+"\n"+txt_data) #write the date and text_view
                 f.close()   #close file
-        elif(path.exists(get_path+'/Quantum_Random_Number_Output.txt')):
-            f=open(get_path+'/Quantum_Random_Number_Output.txt', "at")
+        else:
+            f=open(get_path+'\\Quantum_Random_Number_Output_Auto_Gen.txt', "at")
         if not f.closed:
             f.write(date+"\n"+txt_data)
         f.close()
-    webbrowser.open(get_path+'/Quantum_Random_Number_Output.txt')
+    webbrowser.open(get_path+'\\Quantum_Random_Number_Output_Auto_Gen.txt')
     for numbers in rslt_list:
         if numbers in freq:
             freq[numbers] += 1
@@ -250,26 +249,27 @@ def generate(event=None):
     backend = option_var.get()
     start_time = time.perf_counter_ns()
     circ = QuantumCircuit(q,q)  #init quantum circuit
-    if(q==1):
-        for i in range(0,q):
-            circ.h(i)   #add H-gate
-            circ.measure(i,i)
-    elif(q==2):
-        for i in range(0,q):
-            circ.h(i)
-            circ.measure(i,i)
-    elif(q==3):
-        for i in range(0,q):
-            circ.h(i)
-            circ.measure(i,i)
-    elif(q==4):
-        for i in range(0,q):
-            circ.h(i)
-            circ.measure(i,i)
-    elif(q==5):
-        for i in range(0,q):
-            circ.h(i)
-            circ.measure(i,i)
+    match q:
+        case 1:
+            for i in range(0,q):
+                circ.h(i)   #add H-gate
+                circ.measure(i,i)
+        case 2:
+            for i in range(0,q):
+                circ.h(i)   #add H-gate
+                circ.measure(i,i)
+        case 3:
+            for i in range(0,q):
+                circ.h(i)   #add H-gate
+                circ.measure(i,i)
+        case 4:
+            for i in range(0,q):
+                circ.h(i)   #add H-gate
+                circ.measure(i,i)
+        case 5:
+            for i in range(0,q):
+                circ.h(i)   #add H-gate
+                circ.measure(i,i)
     number = [] #init a list  
     for i in range(0,int(n)):   #how many iteration which effect how many digit created
         if(search("gpu", backend)):
@@ -293,36 +293,37 @@ def generate(event=None):
     generate.digit = str(len(str(generate.rslt))) #count lenght of result
     stop_time = time.perf_counter_ns()
     final_time = stop_time - start_time
-    if(str(var.get()) == "1"):  #get value of radio button
-        txt_view.config(state=NORMAL)   #enable textbox
-        txt_view.delete(1.0,END)    #clear all entry
-        txt_view.insert(INSERT, str(generate.rslt) + "\n" + "Time to execute circuit until result obtained: " + str(final_time))  #insert the result
-        txt_view.config(state=DISABLED) #disable or readonly mode
-    elif(str(var.get()) == "2"):
-        txt_view.config(state=NORMAL)
-        txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, generate.bit_string + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-        txt_view.config(state=DISABLED)
-    elif(str(var.get()) == "3"):
-        txt_view.config(state=NORMAL)
-        txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, str(generate.digit) + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-        txt_view.config(state=DISABLED)
-    elif(str(var.get()) == "4"):
-        txt_view.config(state=NORMAL)
-        txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, str(generate.digit) +"\n" + str(generate.rslt) +"\n"+ str(generate.bit_string) + "\n" + generate.hex_digit + "\n" + generate.oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-        txt_view.config(state=DISABLED)
-    elif(str(var.get()) == "5"):
-        txt_view.config(state=NORMAL)
-        txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, generate.hex_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-        txt_view.config(state=DISABLED)
-    elif(str(var.get()) == "6"):
-        txt_view.config(state=NORMAL)
-        txt_view.delete(1.0,END)
-        txt_view.insert(INSERT, generate.oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time))
-        txt_view.config(state=DISABLED)
+    match str(var.get()):
+        case "1":
+            txt_view.config(state=NORMAL)   #enable textbox
+            txt_view.delete(1.0,END)    #clear all entry
+            txt_view.insert(INSERT, str(generate.rslt) + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")  #insert the result
+            txt_view.config(state=DISABLED) #disable or readonly mode
+        case "2":
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, generate.bit_string + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+            txt_view.config(state=DISABLED)
+        case "3":
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, str(generate.digit) + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+            txt_view.config(state=DISABLED)
+        case "4":
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, str(generate.digit) +"\n" + str(generate.rslt) +"\n"+ str(generate.bit_string) + "\n" + generate.hex_digit + "\n" + generate.oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+            txt_view.config(state=DISABLED)
+        case "5":
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, generate.hex_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+            txt_view.config(state=DISABLED)
+        case "6":
+            txt_view.config(state=NORMAL)
+            txt_view.delete(1.0,END)
+            txt_view.insert(INSERT, generate.oct_digit + "\n" + "Time to execute circuit until result obtained: " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")
+            txt_view.config(state=DISABLED)
     try:
         circ.draw(output="mpl", filename="circuit_output/qrng_circuit.png")
         circ.draw(output="latex", filename="circuit_output/qrng_circuit_latex.png")
@@ -397,7 +398,7 @@ def factorize(event=None):
     final_rslt = rslt.factors[0]    #get the first list of the result
     stop_time = time.perf_counter_ns()  #stop timer for count how long Shor's algorithm execute
     final_time = stop_time - start_time
-    lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt) + " with total execution time " + str(final_time))   #set the result to existing label
+    lbl_var.set("Result factor of " + str(result) + " is " + str(final_rslt) + " with total execution time " + str(final_time) + "ns or " + str(final_time/1000000000) + "s")   #set the result to existing label
     date = str(datetime.datetime.now())
     if(not path.exists(get_path+'/Shor.flog')):  #check if the file is exist
         f=open(get_path+'/Shor.flog', "xt")  #open the file if the file not exist, create it

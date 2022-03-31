@@ -2,7 +2,9 @@ pandas
 numpy
 qiskit[all]
 tk
+requests
 matplotlib
+Pillow
 seaborn
 numba
 tkhtmlview
